@@ -80,9 +80,9 @@ const Signup = ({
       <h1>Signup</h1>
       <form onSubmit={handleForm}>
         <PurpleTextField
-          id="lastname"
-          name="lastname"
-          label="lastname"
+          id="pseudo"
+          name="pseudo"
+          label="pseudo"
           variant="outlined"
           value={inputsState.pseudo}
           onChange={handleInputs}

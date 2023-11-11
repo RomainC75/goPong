@@ -27,3 +27,7 @@ type DB struct {
 type Jwt struct {
 	Secret string
 }
+
+type Front struct {
+	Host string
+}
