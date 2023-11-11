@@ -1,8 +1,7 @@
-import React, { FormEvent, useState, ChangeEvent, useContext } from 'react'
+import { type FormEvent, useState, type ChangeEvent, useContext } from 'react'
 import './styles/login.css'
-import { LoginInterface } from '../@types/authContext.type'
 import { AuthContext } from '../context/auth.context'
-import { AuthContextInterface } from '../@types/authContext.type'
+import { type AuthContextInterface, type LoginInterface } from '../@types/authContext.type'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import axios from 'axios'
@@ -24,12 +23,12 @@ const Login = (): JSX.Element => {
 
   const handleInputs = (
     e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-  ) => {
-    if (e.target && 'value' in e.target && 'name' in e.target) {
+  ): void => {
+    if ('value' in e.target && 'name' in e.target) {
       setIsLoginError(false)
       const newValues: LoginInterface = {
         ...inputsState,
-        [e.target.name]: e.target.value,
+        [e.target.name]: e.target.value
       }
       setInputsState(newValues)
       if (Object.values(newValues).includes('')) {
@@ -45,7 +44,7 @@ const Login = (): JSX.Element => {
     axios
       .post(`${API_URL}/auth/signin`, inputsState)
       .then(ans => {
-        console.log("=> ans : ", ans)
+        console.log('=> ans : ', ans)
         storeToken(ans.data.token)
         authenticateUser()
         navigate('/')

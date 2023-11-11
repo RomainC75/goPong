@@ -1,4 +1,4 @@
-import { useState, useContext }, React from 'react'
+import { useState, useContext } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 import { AuthContext } from '../context/auth.context'
 import axios from 'axios'
@@ -80,21 +80,11 @@ const Signup = ({
       <h1>Signup</h1>
       <form onSubmit={handleForm}>
         <PurpleTextField
-          id="firstname"
-          name="firstname"
-          label="firstname"
-          variant="outlined"
-          value={inputsState.firstname}
-          onChange={handleInputs}
-          helperText={!isFirstNameValid && 'need a first name'}
-          error={!isFirstNameValid}
-        />
-        <PurpleTextField
           id="lastname"
           name="lastname"
           label="lastname"
           variant="outlined"
-          value={inputsState.lastname}
+          value={inputsState.pseudo}
           onChange={handleInputs}
           helperText={!isLastNameValid && 'need a last name'}
           error={!isLastNameValid}

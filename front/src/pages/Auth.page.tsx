@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import { useState } from 'react'
 
-import "./styles/auth.css";
+import './styles/auth.css'
+import Login from '../components/Login'
+import Signup from '../components/Signup'
 
 const AuthPage = (): JSX.Element => {
-  const [isLoginNotSignup, setIsLoginNotSignup] = useState<boolean>(true);
+  const [isLoginNotSignup, setIsLoginNotSignup] = useState<boolean>(true)
 
-  const toggleLoginOrSignup = () => {
-    setIsLoginNotSignup(!isLoginNotSignup);
-  };
+  const toggleLoginOrSignup = (): void => {
+    setIsLoginNotSignup(!isLoginNotSignup)
+  }
 
   return (
     <div className="AuthPage">
@@ -16,13 +18,12 @@ const AuthPage = (): JSX.Element => {
           {isLoginNotSignup ? <Login /> : <Signup setIsLoginNotSignup={setIsLoginNotSignup}/>}
           <div className="center">
                 <p>
-                  { isLoginNotSignup ? "Don't h" : "H"}ave an account ?{" "}
+                  { isLoginNotSignup ? "Don't h" : 'H'}ave an account ?{' '}
                   <span
                     onClick={toggleLoginOrSignup}
                     className="color1 bold cursor"
                   >
-                    { isLoginNotSignup ? "Sign up" :"Login"}
-                    
+                    { isLoginNotSignup ? 'Sign up' : 'Login'}
                   </span>
                 </p>
               </div>
@@ -37,7 +38,7 @@ const AuthPage = (): JSX.Element => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AuthPage;
+export default AuthPage
