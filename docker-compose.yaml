@@ -19,4 +19,17 @@ services:
     ports:
       - 8081:8080
 
-  
+
+  front:
+    container_name: saegus-front
+    restart: always
+    depends_on:
+      - back
+    build: ./front
+    ports:
+      - 3000:3000
+    volumes:
+      - ./front/src:/app/src
+    environment:
+      - REACT_APP_API_URL=${BACK_DOMAIN}:${BACK_PORT}
+
