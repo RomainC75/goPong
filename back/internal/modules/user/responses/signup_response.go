@@ -8,15 +8,14 @@ import (
 type User struct {
 	ID    uuid.UUID
 	Email string
-	FirstName  string
-	LastName  string
+	Pseudo string
 }
 
 func ToUser(user UserModel.User) User {
 	return User{
 		ID:    user.ID,
 		Email: user.Email, 
-		FirstName:  user.FirstName,
-		LastName:  user.LastName,
+		Pseudo:  user.Pseudo,
+		
 	}
 }

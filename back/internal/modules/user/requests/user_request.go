@@ -7,7 +7,6 @@ type LoginRequest struct {
 
 type SignupRequest struct {
 	LoginRequest
-	FirstName string `json:"firstname" binding:"required,min=2"`
-	LastName string `json:"lastname" binding:"required,min=2"`
+	Pseudo string `json:"pseudo" binding:"required,min=2"`
 }
 

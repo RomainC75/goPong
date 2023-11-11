@@ -37,8 +37,8 @@ func (userService *UserService) CreateUserSrv (user UserRequest.SignupRequest) (
 
 	newUser.Email= user.Email
 	newUser.Password= hashedPassword
-	newUser.FirstName= user.FirstName
-	newUser.LastName= user.LastName
+	newUser.Pseudo= user.Pseudo
+	
 
 	createdUser, err := userService.userRepository.CreateUser(newUser)
 	if err != nil {
