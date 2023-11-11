@@ -1,0 +1,15 @@
+.Login{
+    & h1{
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    & form{
+        display: flex;
+        flex-direction: column;
+        max-width:300px;
+        margin:0 auto;
+        & *{
+            margin-bottom: 5px;
+        }
+    }
+}

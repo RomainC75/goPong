@@ -2,16 +2,16 @@ import {
   useState,
   createContext,
   useEffect,
-  type PropsWithChildren,
+  type PropsWithChildren
 } from 'react'
 import {
   type AuthContextInterface,
-  type UserInterface,
+  type UserInterface
 } from '../@types/authContext.type'
 import { type NavigateFunction, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
-const API_URL: string = process.env.REACT_APP_API_URL || 'http://localhost:5000'
+const API_URL: string = process.env.REACT_APP_API_URL ?? 'http://localhost:5000'
 
 const AuthContext = createContext<AuthContextInterface | null>(null)
 
@@ -25,13 +25,13 @@ const AuthProviderWrapper = (props: PropsWithChildren): JSX.Element => {
     localStorage.setItem('authToken', token)
   }
 
-  const removeToken = () => {
+  const removeToken = (): void => {
     localStorage.removeItem('authToken')
     setUser(null)
     navigate('/auth')
   }
 
-  const logOutUser = () => {
+  const logOutUser = (): void => {
     setUser(null)
   }
 
@@ -45,12 +45,12 @@ const AuthProviderWrapper = (props: PropsWithChildren): JSX.Element => {
       return
     }
     setIsLoading(true)
-    console.log("=> VERIRY : ", storedToken)
+    console.log('=> VERIRY : ', storedToken)
     axios
       .get(`${API_URL}/auth/verify`, {
         headers: {
-          Authorization: `Bearer ${storedToken}`,
-        },
+          Authorization: `Bearer ${storedToken}`
+        }
       })
       .then(ans => {
         setIsLoggedIn(true)
@@ -79,7 +79,7 @@ const AuthProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         authenticateUser,
         logOutUser,
         API_URL,
-        removeToken,
+        removeToken
       }}
     >
       {props.children}

@@ -1,5 +1,5 @@
 import { type FormEvent, useState, type ChangeEvent, useContext } from 'react'
-import './styles/login.css'
+import './styles/login.scss'
 import { AuthContext } from '../context/auth.context'
 import { type AuthContextInterface, type LoginInterface } from '../@types/authContext.type'
 import Alert from '@mui/material/Alert'

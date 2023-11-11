@@ -13,7 +13,7 @@ import {
 
 import type { SignupFullInterface, AuthContextInterface } from '../@types/authContext.type'
 
-import './styles/signup.css'
+import './styles/signup.scss'
 
 interface SignupComponentInterface {
   setIsLoginNotSignup: (isLoginNotSignup: boolean) => void

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import './styles/auth.css'
+import './styles/auth.scss'
 import Login from '../components/Login'
 import Signup from '../components/Signup'
 
