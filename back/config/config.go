@@ -5,6 +5,7 @@ type Config struct {
 	Server Server
 	DB     DB
 	Jwt    Jwt
+	Front Front
 }
 
 type App struct {

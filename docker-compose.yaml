@@ -31,3 +31,4 @@ services:
       - ./front/src:/app/src
     environment:
       - REACT_APP_API_URL=${BACK_DOMAIN}:${BACK_PORT}
+      - WDS_SOCKET_PORT=0

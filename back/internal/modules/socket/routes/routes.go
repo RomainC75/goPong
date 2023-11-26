@@ -9,9 +9,11 @@ import (
 func Routes(router *gin.Engine) {
 
 	socketController := socketCtrl.New()
-	guestGroup := router.Group("/ws")
-	{
-		guestGroup.GET("/", socketController.Socket)
+	// guestGroup := router.Group("/ws")
+	// {
+	// 	guestGroup.GET("/", socketController.Socket)
 		
-	}	
+	// }
+	// !!!!!!!!!!!!!!!! WARNING !!!!!!!!!!!!!!!!!!!!
+	router.GET("/ws", socketController.Socket)
 }

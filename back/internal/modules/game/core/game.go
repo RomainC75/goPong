@@ -45,9 +45,9 @@ func GameCore(conn *websocket.Conn){
 				break
 			}
 
-			fmt.Println("MESSAFEZ : ", message.Message)
+			fmt.Println("MESSAGEZ : ", message.Message)
 
-			conn.WriteMessage(websocket.TextMessage, []byte("Hello, WebSocket!"))
+			conn.WriteMessage(websocket.TextMessage, []byte(message.Message))
 			time.Sleep(time.Millisecond * 500)
 		}
 		defer conn.Close()
