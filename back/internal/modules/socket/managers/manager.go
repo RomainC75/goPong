@@ -1,4 +1,4 @@
-package manager
+package managers
 
 import (
 	"log"
@@ -9,13 +9,13 @@ import (
 
 	"github.com/gorilla/websocket"
 	configu "github.com/saegus/test-technique-romain-chenard/pkg/configu"
-
 	// SocketMessage "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/requests"
-	Client "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/client"
 )
 
 type ManagerInterface interface{
-	serveWS(w gin.ResponseWriter , r *http.Request)
+	ServeWS(w gin.ResponseWriter , r *http.Request)
+	AddClient(client *Client)
+	RemoveClient(client *Client)
 }
 
 var(
@@ -33,22 +33,43 @@ var(
 )
 
 type Manager struct {
-	client Client.ClientList
+	clients ClientList
 	sync.RWMutex
 }
 
-func NewManager() *Manager{
+func New() *Manager{
 	return &Manager{
-		client: make(Client.ClientList),
+		clients: make(ClientList),
 	}
 }
 
-func (m *Manager) serveWS(w gin.ResponseWriter , r *http.Request){
+func (m *Manager) ServeWS(w gin.ResponseWriter , r *http.Request){
 	log.Println("new Connection")
 	conn, err := websocketUpgrader.Upgrade(w,r, nil)
 	if err != nil{
 		log.Println(err)
 		return
 	}
-	conn.Close()
+	// conn.Close()
+
+	client := NewClient(conn, m)
+	m.AddClient(client)
+}
+
+func (m *Manager) AddClient(client *Client){
+	// do not modify at the same time, when 2 people are trying to connect at the same time.
+	m.Lock()
+	defer m.Unlock()
+
+	m.clients[client] = true
+}
+
+func (m *Manager) RemoveClient(client *Client){
+	m.Lock()
+	defer m.Unlock()
+
+	if _, ok := m.clients[client]; ok{
+		client.connection.Close()
+		delete(m.clients, client)
+	}
 }

@@ -5,18 +5,20 @@ import (
 	ListService "github.com/saegus/test-technique-romain-chenard/internal/modules/list/services"
 	TaskService "github.com/saegus/test-technique-romain-chenard/internal/modules/task/services"
 
-	Manager "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/manager"
+	Manager "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/managers"
 )
 
 type Controller struct {
 	taskService TaskService.TaskServiceInterface
 	listService ListService.ListServiceInterface
+	manager Manager.ManagerInterface
 }
 
 func New() *Controller {
 	return &Controller{
 		taskService: TaskService.New(),
 		listService: ListService.New(),
+		manager: Manager.New(),
 	}
 }
 
@@ -36,8 +38,9 @@ func New() *Controller {
 // }
 
 func (controller *Controller) Socket(c *gin.Context) {
-	manager := Manager.NewManager()
-	manager.serveWS(c.Writer, c.Request)
+	
+	controller.manager.ServeWS(c.Writer, c.Request)
+	
 	
 	// conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	
