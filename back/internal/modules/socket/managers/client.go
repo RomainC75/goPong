@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/gorilla/websocket"
-	SocketMessage "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/requests"
 )
 
 type ClientList map[*Client]bool
@@ -13,42 +12,45 @@ type ClientList map[*Client]bool
 type Client struct {
 	connection *websocket.Conn
 	manager *Manager
+
+	// avoid concurrent writes on the socket connection
+	egress chan []byte
 }
 
 func NewClient(conn *websocket.Conn, manager *Manager) *Client{
 	return &Client{
 		connection: conn,
 		manager: manager,
+		egress: make(chan []byte),
 	}
 }
 
-func (c *Client) readMessages(myChan chan string){
+func (c *Client) readMessages(){
 	fmt.Printf("listening")
 	defer func(){
 		// cleanup connection
 		c.manager.RemoveClient(c)
 	}()
 	for{
-		var message SocketMessage.WebSocketMessage
-		err := c.connection.ReadJSON(&message)
-		if err != nil {
-			log.Println("=> err : ", err.Error())
-		}
-		fmt.Printf("=> ", message)
-		myChan <- message.Content["message"]
-
-		c.connection.WriteJSON("hoooooooo")
-
-		// messageType, payload, err := c.connection.ReadMessage()
-
-		// if err != nil{
-		// 	if websocket.IsUnexpectedCloseError(err , websocket.CloseGoingAway, websocket.CloseAbnormalClosure){
-		// 		log.Printf("error reading message: %v", err)
-		// 	}
-		// 	break
+		// var message SocketMessage.WebSocketMessage
+		// err := c.connection.ReadJSON(&message)
+		// if err != nil {
+		// 	log.Println("=> err : ", err.Error())
 		// }
+		// fmt.Printf("=> ", message)
+		// myChan <- message.Content["message"]
 
-		// log.Println(messageType)
-		// log.Println(string(payload))
+		messageType, payload, err := c.connection.ReadMessage()
+
+		if err != nil{
+			if websocket.IsUnexpectedCloseError(err , websocket.CloseGoingAway, websocket.CloseAbnormalClosure){
+				log.Printf("error reading message: %v", err)
+			}
+			break
+		}
+		
+		log.Println(messageType)
+		log.Println(string(payload))
 	}
 }
+

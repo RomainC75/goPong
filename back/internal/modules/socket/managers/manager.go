@@ -1,7 +1,6 @@
 package managers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"sync"
@@ -56,13 +55,10 @@ func (m *Manager) ServeWS(w gin.ResponseWriter , r *http.Request){
 	client := NewClient(conn, m)
 	m.AddClient(client)
 
-	// start client process
-	myChan := make(chan string, 10)
-	go client.readMessages(myChan)
-
-	str := <- myChan
 	
-	fmt.Printf("=> %s\n", str)
+	go client.readMessages()
+	// go client.writeMessages()
+	
 }
 
 func (m *Manager) AddClient(client *Client){
