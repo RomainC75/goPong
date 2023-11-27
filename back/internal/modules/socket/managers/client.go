@@ -22,19 +22,23 @@ func NewClient(conn *websocket.Conn, manager *Manager) *Client{
 	}
 }
 
-func (c *Client) readMessages(){
+func (c *Client) readMessages(myChan chan string){
 	fmt.Printf("listening")
 	defer func(){
 		// cleanup connection
 		c.manager.RemoveClient(c)
 	}()
 	for{
-		var message SocketMessage.Message
+		var message SocketMessage.WebSocketMessage
 		err := c.connection.ReadJSON(&message)
 		if err != nil {
 			log.Println("=> err : ", err.Error())
 		}
 		fmt.Printf("=> ", message)
+		myChan <- message.Content["message"]
+
+		c.connection.WriteJSON("hoooooooo")
+
 		// messageType, payload, err := c.connection.ReadMessage()
 
 		// if err != nil{
