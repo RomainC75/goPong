@@ -58,7 +58,6 @@ func (controller *Controller) HandleSignin(c *gin.Context){
 		return
 	}
 
-	utils.PrettyDisplay(userResponse)
 	c.JSON(http.StatusAccepted, userResponse)
 }
 

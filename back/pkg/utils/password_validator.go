@@ -2,12 +2,10 @@ package utils
 
 import (
 	"errors"
-	"fmt"
 	"regexp"
 )
 
 func PasswordConstrainsValidator(password string) error{
-	fmt.Println(password)
 	r, _ := regexp.Compile(`[\[\]*+,-.\/:;()<=>?@]`)
 	specialCharacterResult := r.FindStringIndex(password)
 	if len(specialCharacterResult)== 0 {

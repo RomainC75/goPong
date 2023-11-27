@@ -9,7 +9,6 @@ import (
 	TaskRequest "github.com/saegus/test-technique-romain-chenard/internal/modules/task/requests"
 	TaskResponse "github.com/saegus/test-technique-romain-chenard/internal/modules/task/responses"
 	TaskService "github.com/saegus/test-technique-romain-chenard/internal/modules/task/services"
-	"github.com/saegus/test-technique-romain-chenard/pkg/utils"
 )
 
 type Controller struct {
@@ -134,7 +133,6 @@ func (controller *Controller) UpdateTask(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
 		return
 	}
-	utils.PrettyDisplay(newTask)
 
 	// test task 
 	foundTask, err := controller.taskService.GetTask(taskId)

@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +9,6 @@ import (
 	ListResponse "github.com/saegus/test-technique-romain-chenard/internal/modules/list/responses"
 	ListService "github.com/saegus/test-technique-romain-chenard/internal/modules/list/services"
 	TaskService "github.com/saegus/test-technique-romain-chenard/internal/modules/task/services"
-	"github.com/saegus/test-technique-romain-chenard/pkg/utils"
 )
 
 type Controller struct {
@@ -52,8 +50,6 @@ func (controller *Controller) GetLists(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Println("lists : ====> ")
-	utils.PrettyDisplay(lists)
 	c.JSON(http.StatusOK, ListResponse.ToListArrayResponse(lists))
 }
 

@@ -50,10 +50,13 @@ func (m *Manager) ServeWS(w gin.ResponseWriter , r *http.Request){
 		log.Println(err)
 		return
 	}
-	// conn.Close()
-
+	
+	// add to client list
 	client := NewClient(conn, m)
 	m.AddClient(client)
+
+	// start client process
+	go client.readMessages()
 }
 
 func (m *Manager) AddClient(client *Client){
