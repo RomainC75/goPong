@@ -13,7 +13,7 @@ type Client struct {
 	connection *websocket.Conn
 	manager *Manager
 
-	// avoid concurrent writes on the socket connection
+	// !!! avoid concurrent writes on the socket connection (unbuffered chan :-) )!!!
 	egress chan []byte
 }
 
@@ -48,9 +48,36 @@ func (c *Client) readMessages(){
 			}
 			break
 		}
+
+		// broadcast
+		for wsclient := range c.manager.clients{
+			wsclient.egress <- payload
+		}
 		
 		log.Println(messageType)
 		log.Println(string(payload))
 	}
 }
 
+func (c *Client) writeMessages(){
+	defer func(){
+		c.manager.RemoveClient(c)
+	}()
+
+	for{
+		select{
+		case message, ok := <- c.egress:
+			if !ok {
+				if err := c.connection.WriteMessage(websocket.CloseMessage, nil); err != nil{
+					log.Println("connection closed:", err)
+				}
+				break
+			}
+
+			if err := c.connection.WriteMessage(websocket.TextMessage, message); err != nil{
+				log.Println("failed to send message: %v", err)
+			}
+			log.Println("message sent")
+		}	
+	}
+}
