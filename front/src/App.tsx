@@ -6,8 +6,9 @@ import { EWsMessageType, webSocketMessage } from './@types/socket.type';
 function App(): JSX.Element {
   const [message, setMessage] = useState('');
   const [inputValue, setInputValue] = useState('');
+  const [messages, setMessages] = useState<string[]>([])
 
-  const { sendMessage: sendWsMessage, lastMessage } = useWebSocket(
+  const { sendMessage: sendWsMessage, lastMessage } = useWebSocket<webSocketMessage>(
     'ws://localhost:5000/ws'
   );
 
@@ -29,6 +30,8 @@ function App(): JSX.Element {
   useEffect(() => {
     if (lastMessage !== null) {
       console.log('=> last message : ', lastMessage);
+      const message = JSON.parse(lastMessage.data)
+      setMessages((messages)=>([...messages, message.content.message]))
     }
   }, [lastMessage]);
 
@@ -41,7 +44,9 @@ function App(): JSX.Element {
         onChange={handleChange}
       />
       <button onClick={handleClick}>Send</button>
-      <pre>{message}</pre>
+      <ul>
+        { messages.map((message, i) => <li key={i}>{message}</li>)}
+      </ul>
     </div>
   );
 }
