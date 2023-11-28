@@ -15,7 +15,7 @@ import (
 )
 
 type ManagerInterface interface{
-	ServeWS(w gin.ResponseWriter , r *http.Request, userId string)
+	ServeWS(w gin.ResponseWriter , r *http.Request, userData UserData)
 	AddClient(client *Client)
 	RemoveClient(client *Client)
 }
@@ -50,7 +50,7 @@ func New() *Manager{
 	}
 }
 
-func (m *Manager) ServeWS(w gin.ResponseWriter , r *http.Request, userId string){
+func (m *Manager) ServeWS(w gin.ResponseWriter , r *http.Request, userData UserData){
 	log.Println("new Connection")
 	conn, err := websocketUpgrader.Upgrade(w,r, nil)
 	if err != nil{
@@ -59,7 +59,7 @@ func (m *Manager) ServeWS(w gin.ResponseWriter , r *http.Request, userId string)
 	}
 	
 	// add to client list
-	client := NewClient(conn, m, userId)
+	client := NewClient(conn, m, userData)
 
 	m.AddClient(client)
 	
@@ -85,12 +85,14 @@ func (m *Manager) RemoveClient(client *Client){
 	}
 }
 
-func (m *Manager) BroadcastMessage(message SocketMessage.WebSocketMessage, userId string){
+func (m *Manager) BroadcastMessage(message SocketMessage.WebSocketMessage, userData UserData){
 	m.Lock()
 	defer m.Unlock()
 
 	newContent := message.Content
-	newContent["userId"] = userId
+	newContent["userId"] = userData.UserId.String()
+	newContent["userEmail"] = userData.UserEmail
+
 	newMessage := SocketMessage.WebSocketMessage{
 		Type: "BroadCast",
 		Content: newContent,

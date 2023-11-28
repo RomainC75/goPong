@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 
 	SocketMessage "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/requests"
@@ -11,17 +12,22 @@ import (
 
 type ClientList map[*Client]bool
 
+type UserData struct {
+	UserId uuid.UUID
+	UserEmail string
+}
+
 type Client struct {
-	userId string
+	userData UserData
 	connection *websocket.Conn
 	manager *Manager
 	// !!! avoid concurrent writes on the socket connection (unbuffered chan :-) )!!!
 	egress chan []byte
 }
 
-func NewClient(conn *websocket.Conn, manager *Manager, userId string) *Client{
+func NewClient(conn *websocket.Conn, manager *Manager, userData UserData) *Client{
 	return &Client{
-		userId: userId,
+		userData: userData,
 		connection: conn,
 		manager: manager,
 		egress: make(chan []byte),
@@ -43,7 +49,7 @@ func (c *Client) readMessages(){
 		// fmt.Printf("=> ", message)
 		// myChan <- message.Content["message"]
 
-		c.manager.BroadcastMessage(message, c.userId)
+		c.manager.BroadcastMessage(message, c.userData)
 
 		// messageType, payload, err := c.connection.ReadMessage()
 		// if err != nil{

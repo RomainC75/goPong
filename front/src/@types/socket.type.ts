@@ -3,9 +3,13 @@ export enum EWsMessageType {
   idAssigned = 'IDASSIGNED',
   memberJoin = 'MEMBERJOIN',
   memberLeave = 'MEMBERLEAVE',
+  broadcast = 'BROADCAST'
+
 }
 
 export interface webSocketMessage {
-  type: EWsMessageType;
-  content: Record<string, any>;
+  type: EWsMessageType
+  content: Record<string, any>
 }
+
+

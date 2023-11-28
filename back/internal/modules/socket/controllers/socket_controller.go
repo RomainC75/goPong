@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	ListService "github.com/saegus/test-technique-romain-chenard/internal/modules/list/services"
 	TaskService "github.com/saegus/test-technique-romain-chenard/internal/modules/task/services"
 
@@ -38,8 +39,17 @@ func New() *Controller {
 func (controller *Controller) Socket(c *gin.Context) {
 	userId, _ := c.Get("user_id")
 	userIdStr, _ := userId.(string)
+	userUuid, _ := uuid.Parse(userIdStr)
+	userEmail, _ := c.Get("user_email")
+	userEmailStr, _ := userEmail.(string)
 
-	controller.manager.ServeWS(c.Writer, c.Request, userIdStr)
+
+	userData := Manager.UserData{
+		UserId: userUuid, 
+		UserEmail: userEmailStr,
+	}
+
+	controller.manager.ServeWS(c.Writer, c.Request, userData)
 	
 	
 	// conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
