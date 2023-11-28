@@ -22,8 +22,6 @@ func New() *Controller {
 	}
 }
 
-
-
 // var upgrader = websocket.Upgrader{
 // 	ReadBufferSize:  1024,
 // 	WriteBufferSize: 1024,
@@ -38,8 +36,10 @@ func New() *Controller {
 // }
 
 func (controller *Controller) Socket(c *gin.Context) {
-	
-	controller.manager.ServeWS(c.Writer, c.Request)
+	userId, _ := c.Get("user_id")
+	userIdStr, _ := userId.(string)
+
+	controller.manager.ServeWS(c.Writer, c.Request, userIdStr)
 	
 	
 	// conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)

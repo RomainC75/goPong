@@ -1,9 +1,9 @@
 package routes
 
 import (
-	socketCtrl "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/controllers"
-
 	"github.com/gin-gonic/gin"
+	"github.com/saegus/test-technique-romain-chenard/internal/middlewares"
+	socketCtrl "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/controllers"
 )
 
 func Routes(router *gin.Engine) {
@@ -16,5 +16,5 @@ func Routes(router *gin.Engine) {
 	// }
 	// !!!!!!!!!!!!!!!! WARNING !!!!!!!!!!!!!!!!!!!!
 	
-	router.GET("/ws", socketController.Socket)
+	router.GET("/ws", middlewares.IsAuth(true),socketController.Socket)
 }

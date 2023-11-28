@@ -16,6 +16,6 @@ func Routes(router *gin.Engine) {
 	{
 		guestGroup.POST("/signup", userController.HandleSignup)
 		guestGroup.POST("/signin", userController.HandleSignin)
-		guestGroup.GET("/verify", middlewares.IsAuth(), userController.Verify)
+		guestGroup.GET("/verify", middlewares.IsAuth(false), userController.Verify)
 	}	
 }

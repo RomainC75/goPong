@@ -1,17 +1,16 @@
-import { useCallback, useEffect, useState } from 'react';
-import useWebSocket from 'react-use-websocket';
-import './App.css';
-import { EWsMessageType, webSocketMessage } from "./@types/socket.type";
-
-
+import { useCallback, useEffect, useState } from 'react'
+import useWebSocket from 'react-use-websocket'
+import './App.css'
+import { EWsMessageType, webSocketMessage } from './@types/socket.type'
 
 function App (): JSX.Element {
   const [message, setMessage] = useState('')
   const [inputValue, setInputValue] = useState('')
   const [messages, setMessages] = useState<string[]>([])
+  const token: string | null = localStorage.getItem('authToken')
 
   const { sendMessage: sendWsMessage, lastMessage } =
-    useWebSocket<webSocketMessage>('ws://localhost:5000/ws')
+    useWebSocket<webSocketMessage>(`ws://localhost:5000/ws?token=${token}`)
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value)
