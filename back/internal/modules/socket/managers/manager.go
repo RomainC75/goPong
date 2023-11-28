@@ -1,6 +1,7 @@
 package managers
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"sync"
@@ -99,6 +100,8 @@ func (m *Manager) BroadcastMessage(message SocketMessage.WebSocketMessage, userD
 	}
 
 	for client := range m.clients{
-		client.connection.WriteJSON(newMessage)
+		// client.connection.WriteJSON(newMessage)
+		b, _ := json.Marshal(newMessage)
+		client.egress <- b
 	}
 }
