@@ -95,7 +95,7 @@ func (m *Manager) BroadcastMessage(message SocketMessage.WebSocketMessage, userD
 	newContent["userEmail"] = userData.UserEmail
 
 	newMessage := SocketMessage.WebSocketMessage{
-		Type: "BroadCast",
+		Type: "BROADCAST",
 		Content: newContent,
 	}
 

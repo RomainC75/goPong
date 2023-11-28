@@ -3,10 +3,19 @@ import useWebSocket from 'react-use-websocket'
 import './App.css'
 import { EWsMessageType, webSocketMessage } from './@types/socket.type'
 
+interface WSMessage {
+  type: string
+  content: {
+    message: string
+    userEmail?: string
+    userId?: string
+  }
+}
+
 function App (): JSX.Element {
   const [message, setMessage] = useState('')
   const [inputValue, setInputValue] = useState('')
-  const [messages, setMessages] = useState<string[]>([])
+  const [messages, setMessages] = useState<WSMessage[]>([])
   const token: string | null = localStorage.getItem('authToken')
 
   const { sendMessage: sendWsMessage, lastMessage } =
@@ -22,7 +31,7 @@ function App (): JSX.Element {
     const msg: webSocketMessage = {
       type: EWsMessageType.message,
       content: {
-        message: message,
+        message
       },
     }
     sendWsMessage(JSON.stringify(msg))
@@ -31,7 +40,7 @@ function App (): JSX.Element {
     if (lastMessage !== null) {
       console.log('=> last message : ', lastMessage)
       const message = JSON.parse(lastMessage.data)
-      setMessages((messages) => [...messages, message.content.message])
+      setMessages((messages) => [...messages, message])
     }
   }, [lastMessage])
 
@@ -46,7 +55,7 @@ function App (): JSX.Element {
       <button onClick={handleClick}>Send</button>
       <ul>
         {messages.map((message, i) => (
-          <li key={i}>{message}</li>
+          <li key={i} className={message.type === EWsMessageType.broadcast ? 'broadcast' : 'message' }>{message.content.message}</li>
         ))}
       </ul>
     </div>
