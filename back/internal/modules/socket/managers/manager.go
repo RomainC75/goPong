@@ -4,12 +4,14 @@ import (
 	"log"
 	"net/http"
 	"sync"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 
 	"github.com/gorilla/websocket"
+	SocketMessage "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/requests"
 	configu "github.com/saegus/test-technique-romain-chenard/pkg/configu"
-	// SocketMessage "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/requests"
 )
 
 type ManagerInterface interface{
@@ -18,13 +20,17 @@ type ManagerInterface interface{
 	RemoveClient(client *Client)
 }
 
+type Hub struct{
+	uuid uuid.UUID
+	createdAt time.Time
+}
+
 var(
 	websocketUpgrader = websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
 		CheckOrigin: func(r *http.Request) bool {
 			origin := r.Header.Get("Origin")
-			// return origin == "http://localhost:3000"
 			cfg := configu.Get()
 			frontUrl := cfg.Front.Host
 			return origin == frontUrl
@@ -34,6 +40,7 @@ var(
 
 type Manager struct {
 	clients ClientList
+	hubs []Hub
 	sync.RWMutex
 }
 
@@ -53,12 +60,12 @@ func (m *Manager) ServeWS(w gin.ResponseWriter , r *http.Request){
 	
 	// add to client list
 	client := NewClient(conn, m)
-	m.AddClient(client)
 
+
+	m.AddClient(client)
 	
 	go client.readMessages()
 	go client.writeMessages()
-	
 }
 
 func (m *Manager) AddClient(client *Client){
@@ -76,5 +83,19 @@ func (m *Manager) RemoveClient(client *Client){
 	if _, ok := m.clients[client]; ok{
 		client.connection.Close()
 		delete(m.clients, client)
+	}
+}
+
+func (m *Manager) BroadcastMessage(message SocketMessage.WebSocketMessage){
+	m.Lock()
+	defer m.Unlock()
+
+	newMessage := SocketMessage.WebSocketMessage{
+		Type: "BroadCast",
+		Content: message.Content,
+	}
+
+	for client := range m.clients{
+		client.connection.WriteJSON(newMessage)
 	}
 }

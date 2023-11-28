@@ -4,15 +4,18 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
+
+	SocketMessage "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/requests"
 )
 
 type ClientList map[*Client]bool
 
 type Client struct {
+	id uuid.UUID
 	connection *websocket.Conn
 	manager *Manager
-
 	// !!! avoid concurrent writes on the socket connection (unbuffered chan :-) )!!!
 	egress chan []byte
 }
@@ -32,30 +35,32 @@ func (c *Client) readMessages(){
 		c.manager.RemoveClient(c)
 	}()
 	for{
-		// var message SocketMessage.WebSocketMessage
-		// err := c.connection.ReadJSON(&message)
-		// if err != nil {
-		// 	log.Println("=> err : ", err.Error())
-		// }
+		var message SocketMessage.WebSocketMessage
+		err := c.connection.ReadJSON(&message)
+		if err != nil {
+			log.Println("=> err : ", err.Error())
+		}
 		// fmt.Printf("=> ", message)
 		// myChan <- message.Content["message"]
 
-		messageType, payload, err := c.connection.ReadMessage()
+		c.manager.BroadcastMessage(message)
 
-		if err != nil{
-			if websocket.IsUnexpectedCloseError(err , websocket.CloseGoingAway, websocket.CloseAbnormalClosure){
-				log.Printf("error reading message: %v", err)
-			}
-			break
-		}
-
-		// broadcast
-		for wsclient := range c.manager.clients{
-			wsclient.egress <- payload
-		}
+		// messageType, payload, err := c.connection.ReadMessage()
+		// if err != nil{
+		// 	if websocket.IsUnexpectedCloseError(err , websocket.CloseGoingAway, websocket.CloseAbnormalClosure){
+		// 		log.Printf("error reading message: %v", err)
+		// 	}
+		// 	break
+		// }
 		
-		log.Println(messageType)
-		log.Println(string(payload))
+		c.connection.WriteJSON(message)
+		// // broadcast
+		// for wsclient := range c.manager.clients{
+		// 	wsclient.egress <- payload
+		// }
+
+		// log.Println(messageType)
+		// log.Println(string(payload))
 	}
 }
 
