@@ -1,6 +1,7 @@
 package managers
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 
@@ -59,7 +60,8 @@ func (c *Client) readMessages(){
 		// 	break
 		// }
 		
-		c.connection.WriteJSON(message)
+		b, _ := json.Marshal(message)
+		c.egress <- b
 		// // broadcast
 		// for wsclient := range c.manager.clients{
 		// 	wsclient.egress <- payload
