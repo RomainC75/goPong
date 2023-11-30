@@ -47,6 +47,7 @@ func (c *Client) readMessages(){
 			log.Println("=> err : ", err.Error())
 		}
 		fmt.Printf("=> ", message)
+		fmt.Println("type : ", message.Type)
 		// myChan <- message.Content["message"]
 		
 		switch message.Type {
@@ -57,6 +58,7 @@ func (c *Client) readMessages(){
 			c.manager.BroadcastMessage("BROADCAST", newContent)
 			break
 		case "CREATE_ROOM":
+			fmt.Println("===> CREAT_ROOM")
 			c.manager.CreateRoom(message, c)
 		}
 		

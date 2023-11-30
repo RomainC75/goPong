@@ -6,7 +6,7 @@ import { type SocketContextInterface } from './@types/socketContext.type'
 import Message from './components/inputs/Message'
 
 function App (): JSX.Element {
-  const { lastMessage, sendBroadcastMessage } = useContext(
+  const { lastMessage } = useContext(
     SocketContext
   ) as SocketContextInterface
 

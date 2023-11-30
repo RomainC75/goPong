@@ -2,6 +2,7 @@ package managers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"sync"
@@ -50,6 +51,7 @@ type Manager struct {
 func New() *Manager{
 	return &Manager{
 		clients: make(ClientList),
+		rooms: make(RoomList),
 	}
 }
 
@@ -103,7 +105,11 @@ func (m *Manager) CreateRoom(message SocketMessage.WebSocketMessage, client *Cli
 		"name": roomName,
 		"id": (*newRoom).Id.String(),
 	}
+	
+	fmt.Println("CreateRoom : ", bcMessage)
+
 	m.BroadcastMessage("ROOM_CREATED", bcMessage)
+	fmt.Println("post broadcast")
 	//notify users
 
 }
@@ -119,16 +125,19 @@ func (m *Manager) CreateRoom(message SocketMessage.WebSocketMessage, client *Cli
 
 
 func (m *Manager) BroadcastMessage(mType string, message map[string]string){
+	fmt.Println("broadcast beginning function")
 	m.Lock()
 	defer m.Unlock()
-
+	fmt.Println("lock ? ")
 	newMessage := SocketMessage.WebSocketMessage{
 		Type: mType,
 		Content: message,
 	}
+	fmt.Println("==> broadcast out : ", newMessage)
 
 	for client := range m.clients{
 		// client.connection.WriteJSON(newMessage)
+		fmt.Println("send.....")
 		b, _ := json.Marshal(newMessage)
 		client.egress <- b
 	}
