@@ -96,11 +96,12 @@ func (m *Manager) CreateRoom(message SocketMessage.WebSocketMessage, client *Cli
 	//create room
 	roomName := message.Content["roomName"]
 	newRoom := NewRoom(roomName, m, client)
+	// add it to the room 
 	m.rooms[newRoom]=true
 
 	bcMessage := map[string]string{
 		"name": roomName,
-		"id": newRoom.Id.String(),
+		"id": (*newRoom).Id.String(),
 	}
 	m.BroadcastMessage("ROOM_CREATED", bcMessage)
 	//notify users

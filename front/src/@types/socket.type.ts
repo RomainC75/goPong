@@ -1,4 +1,4 @@
-export enum EWsMessageTypeReceiver {
+export enum EWsMessageTypeIn {
   message = 'MESSAGE',
   idAssigned = 'IDASSIGNED',
   memberJoin = 'MEMBERJOIN',
@@ -6,18 +6,20 @@ export enum EWsMessageTypeReceiver {
   broadcast = 'BROADCAST',
   roomCreated = 'ROOM_CREATED',
 }
-export enum EWsMessageTypeSender {
+
+export enum EWsMessageTypeOut {
   message = 'MESSAGE',
-  broadcast = 'BRAODCAST',
+  broadcast = 'BROADCAST',
   connectToRoom = 'CONNECT_TO_ROOM',
   createRoom = 'CREATE_ROOM'
 }
 
-
-
-export interface webSocketMessage {
-  type: EWsMessageType
+export interface webSocketMessageOut {
+  type: EWsMessageTypeOut
   content: Record<string, any>
 }
 
-
+export interface webSocketMessageIn {
+type: EWsMessageTypeIn
+  content: Record<string, any>
+}

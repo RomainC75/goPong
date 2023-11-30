@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import useWebSocket from 'react-use-websocket'
 import './App.css'
-import { EWsMessageType, webSocketMessage } from './@types/socket.type'
+import { EWsMessageTypeIn, EWsMessageTypeOut, webSocketMessageIn, webSocketMessageOut } from './@types/socket.type'
 
 interface WSMessage {
   type: string
@@ -19,17 +19,17 @@ function App (): JSX.Element {
   const token: string | null = localStorage.getItem('authToken')
 
   const { sendMessage: sendWsMessage, lastMessage } =
-    useWebSocket<webSocketMessage>(`ws://localhost:5000/ws?token=${token}`)
+    useWebSocket<webSocketMessageIn>(`ws://localhost:5000/ws?token=${token}`)
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value)
     setMessage(e.target.value)
   }, [])
 
-  const handleClick = (): void => {
+  const handleBroadcast = (): void => {
     console.log('=> click ', message)
-    const msg: webSocketMessage = {
-      type: EWsMessageType.message,
+    const msg: webSocketMessageOut = {
+      type: EWsMessageTypeOut.broadcast,
       content: {
         message
       },
@@ -52,10 +52,10 @@ function App (): JSX.Element {
         value={inputValue}
         onChange={handleChange}
       />
-      <button onClick={handleClick}>Send</button>
+      <button onClick={handleBroadcast}>Send</button>
       <ul>
         {messages.map((message, i) => (
-          <li key={i} className={message.type === EWsMessageType.broadcast ? 'broadcast' : 'message' }>{message.content.message}</li>
+          <li key={i} className={message.type === EWsMessageTypeIn.broadcast ? 'broadcast' : 'message' }>{message.content.message}</li>
         ))}
       </ul>
     </div>

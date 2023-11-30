@@ -1,7 +1,6 @@
 package managers
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 
@@ -47,9 +46,9 @@ func (c *Client) readMessages(){
 		if err != nil {
 			log.Println("=> err : ", err.Error())
 		}
-		// fmt.Printf("=> ", message)
+		fmt.Printf("=> ", message)
 		// myChan <- message.Content["message"]
-
+		
 		switch message.Type {
 		case "BROADCAST":
 			newContent := message.Content
@@ -71,8 +70,8 @@ func (c *Client) readMessages(){
 		// 	break
 		// }
 		
-		b, _ := json.Marshal(message)
-		c.egress <- b
+		// b, _ := json.Marshal(message)
+		// c.egress <- b
 		// // broadcast
 		// for wsclient := range c.manager.clients{
 		// 	wsclient.egress <- payload
