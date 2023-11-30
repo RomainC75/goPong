@@ -19,6 +19,7 @@ type ManagerInterface interface{
 	ServeWS(w gin.ResponseWriter , r *http.Request, userData UserData)
 	AddClient(client *Client)
 	RemoveClient(client *Client)
+	BroadcastMessage(mType string, message map[string]string)
 }
 
 type Hub struct{
@@ -43,6 +44,7 @@ type Manager struct {
 	clients ClientList
 	hubs []Hub
 	sync.RWMutex
+	rooms RoomList
 }
 
 func New() *Manager{
@@ -86,17 +88,42 @@ func (m *Manager) RemoveClient(client *Client){
 	}
 }
 
-func (m *Manager) BroadcastMessage(message SocketMessage.WebSocketMessage, userData UserData){
+
+func (m *Manager) CreateRoom(message SocketMessage.WebSocketMessage, client *Client){
 	m.Lock()
 	defer m.Unlock()
 
-	newContent := message.Content
-	newContent["userId"] = userData.UserId.String()
-	newContent["userEmail"] = userData.UserEmail
+	//create room
+	roomName := message.Content["roomName"]
+	newRoom := NewRoom(roomName, m, client)
+	m.rooms[newRoom]=true
+
+	bcMessage := map[string]string{
+		"name": roomName,
+		"id": newRoom.Id.String(),
+	}
+	m.BroadcastMessage("ROOM_CREATED", bcMessage)
+	//notify users
+
+}
+
+// func (m *Manager) AddUserToRoom(){
+
+// }
+
+// func (m *Manager) DeleteRoom(message SocketMessage.WebSocketMessage){
+
+// }
+
+
+
+func (m *Manager) BroadcastMessage(mType string, message map[string]string){
+	m.Lock()
+	defer m.Unlock()
 
 	newMessage := SocketMessage.WebSocketMessage{
-		Type: "BROADCAST",
-		Content: newContent,
+		Type: mType,
+		Content: message,
 	}
 
 	for client := range m.clients{

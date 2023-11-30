@@ -22,7 +22,7 @@ type Client struct {
 	userData UserData
 	connection *websocket.Conn
 	manager *Manager
-	// !!! avoid concurrent writes on the socket connection (unbuffered chan :-) )!!!
+	// !!! avoid concurrent writes on the socket connection (unbuffered chan :-) ) !!!
 	egress chan []byte
 }
 
@@ -50,7 +50,18 @@ func (c *Client) readMessages(){
 		// fmt.Printf("=> ", message)
 		// myChan <- message.Content["message"]
 
-		c.manager.BroadcastMessage(message, c.userData)
+		switch message.Type {
+		case "BROADCAST":
+			newContent := message.Content
+			newContent["userId"] = c.userData.UserId.String()
+			newContent["userEmail"] = c.userData.UserEmail
+			c.manager.BroadcastMessage("BROADCAST", newContent)
+			break
+		case "CREATE_ROOM":
+			c.manager.CreateRoom(message, c)
+		}
+		
+
 
 		// messageType, payload, err := c.connection.ReadMessage()
 		// if err != nil{
