@@ -20,6 +20,15 @@ export interface webSocketMessageOut {
 }
 
 export interface webSocketMessageIn {
-type: EWsMessageTypeIn
-  content: Record<string, any>
+    type: EWsMessageTypeIn
+    content: Record<string, any>
 }
+
+export interface WSMessage {
+    type: string
+    content: {
+      message: string
+      userEmail?: string
+      userId?: string
+    }
+  }

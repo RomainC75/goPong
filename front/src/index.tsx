@@ -7,6 +7,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthProviderWrapper } from './context/auth.context'
 import AuthPage from './pages/Auth.page'
 import IsPrivate from './components/helper/isPrivate'
+import { SocketProviderWrapper } from './context/socket.context'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -19,7 +20,9 @@ root.render(
           <Route path='/auth' element={<AuthPage/>} />
           <Route path='/' element={
             <IsPrivate>
-              <App />
+              <SocketProviderWrapper>
+                <App />
+              </SocketProviderWrapper>
             </IsPrivate>
           }/>
         </Routes>
