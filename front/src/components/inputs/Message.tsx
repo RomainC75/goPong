@@ -8,15 +8,15 @@ const Message = (): JSX.Element => {
       SocketContext
     ) as SocketContextInterface
 
-  const [message, setMessage] = useState<string>('');
+  const [message, setMessage] = useState<string>('')
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setMessage(e.target.value)
   }
 
-  const handleSendMessage = () =>{
+  const handleSendMessage = () => {
     sendBroadcastMessage(message)
-    setMessage("")
+    setMessage('')
   }
 
   return (

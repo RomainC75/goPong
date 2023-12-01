@@ -1,12 +1,12 @@
 package managers
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
-
 	SocketMessage "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/requests"
 )
 
@@ -41,11 +41,23 @@ func (c *Client) readMessages(){
 		c.manager.RemoveClient(c)
 	}()
 	for{
-		var message SocketMessage.WebSocketMessage
-		err := c.connection.ReadJSON(&message)
-		if err != nil {
-			log.Println("=> err : ", err.Error())
+		messageType, payload, err := c.connection.ReadMessage()
+		if err != nil{
+			if websocket.IsUnexpectedCloseError(err , websocket.CloseGoingAway, websocket.CloseAbnormalClosure){
+				log.Printf("error reading message: %v", err)
+			}
+			break
 		}
+		fmt.Println(messageType, payload)
+
+
+		var message SocketMessage.WebSocketMessage
+		if err := json.Unmarshal(payload, &message); err != nil {
+			fmt.Printf("panic reading message ! ")
+        	panic(err)
+    	}
+
+		
 		fmt.Printf("=> inside Client", message)
 		fmt.Println("type : ", message.Type)
 		// myChan <- message.Content["message"]
@@ -72,13 +84,7 @@ func (c *Client) readMessages(){
 		
 
 
-		// messageType, payload, err := c.connection.ReadMessage()
-		// if err != nil{
-		// 	if websocket.IsUnexpectedCloseError(err , websocket.CloseGoingAway, websocket.CloseAbnormalClosure){
-		// 		log.Printf("error reading message: %v", err)
-		// 	}
-		// 	break
-		// }
+		
 		
 		// b, _ := json.Marshal(message)
 		// c.egress <- b
