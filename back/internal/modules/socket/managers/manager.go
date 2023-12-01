@@ -21,6 +21,7 @@ type ManagerInterface interface{
 	AddClient(client *Client)
 	RemoveClient(client *Client)
 	BroadcastMessage()
+	CreateRoom(message SocketMessage.WebSocketMessage, client *Client)SocketMessage.WebSocketMessage
 }
 
 type Hub struct{
@@ -95,7 +96,7 @@ func (m *Manager) RemoveClient(client *Client){
 }
 
 
-func (m *Manager) CreateRoom(message SocketMessage.WebSocketMessage, client *Client){
+func (m *Manager) CreateRoom(message SocketMessage.WebSocketMessage, client *Client)SocketMessage.WebSocketMessage{
 	m.Lock()
 	defer m.Unlock()
 
@@ -118,8 +119,16 @@ func (m *Manager) CreateRoom(message SocketMessage.WebSocketMessage, client *Cli
 		Content: bcMessage,
 	}
 	m.broadcastC <- wsMessage
+
+
 	fmt.Println("post broadcast")
-	//notify users
+	
+	//notify user
+	backMessage:= SocketMessage.WebSocketMessage{
+		Type: "ROOM_CREATED_BYYOU",
+		Content: bcMessage,
+	}
+	return backMessage
 
 }
 
@@ -134,6 +143,7 @@ func (m *Manager) CreateRoom(message SocketMessage.WebSocketMessage, client *Cli
 
 
 func (m *Manager) BroadcastMessage(){
+	// TODO : try withou m.broadcastC
 	for{
 		select{
 		case wsMessage, _ := <- m.broadcastC:

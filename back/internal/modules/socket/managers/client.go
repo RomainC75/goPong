@@ -79,7 +79,9 @@ func (c *Client) readMessages(){
 			break
 		case "CREATE_ROOM":
 			fmt.Println("===> CREAT_ROOM")
-			c.manager.CreateRoom(message, c)
+			backMessage := c.manager.CreateRoom(message, c)
+			m, _ := json.Marshal(backMessage)
+			c.egress <- m
 		}
 		
 

@@ -1,12 +1,11 @@
-import React, { ChangeEvent, useContext, useState } from "react";
-import { SocketContext } from "../../context/socket.context";
-import { SocketContextInterface } from "../../@types/socketContext.type";
-
+import { type ChangeEvent, useContext, useState } from 'react'
+import { SocketContext } from '../../context/socket.context'
+import { SocketContextInterface } from '../../@types/socketContext.type'
 
 const Message = (): JSX.Element => {
   const { sendBroadcastMessage } = useContext(
-      SocketContext
-    ) as SocketContextInterface
+    SocketContext
+  ) as SocketContextInterface
 
   const [message, setMessage] = useState<string>('')
 
@@ -14,14 +13,14 @@ const Message = (): JSX.Element => {
     setMessage(e.target.value)
   }
 
-  const handleSendMessage = () => {
+  const handleSendMessage = (): void => {
     sendBroadcastMessage(message)
     setMessage('')
   }
 
   return (
     <div>
-      <input id='input' type='text' value={message} onChange={handleChange } />
+      <input id="input" type="text" value={message} onChange={handleChange} />
       <button onClick={handleSendMessage}>send messages</button>
     </div>
   )
