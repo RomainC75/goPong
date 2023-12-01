@@ -16,14 +16,14 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
   const { sendMessage: sendWsMessage, lastMessage } =
     useWebSocket<webSocketMessageIn>(`ws://localhost:5000/ws?token=${token ?? ''}`)
 
-  const [broadcastmessage, setBroadcastMessage] = useState<string>('')
+  // const [broadcastmessage, setBroadcastMessage] = useState<string>('')
 
-  const sendBroadcastMessage = (): void => {
-    console.log('=> click ', broadcastmessage);
+  const sendBroadcastMessage = (message: string): void => {
+    console.log('=> broadcast ', message)
     const msg: webSocketMessageOut = {
       type: EWsMessageTypeOut.broadcast,
       content: {
-        broadcastmessage
+        message
       }
     }
     sendWsMessage(JSON.stringify(msg))
@@ -48,8 +48,6 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
     <SocketContext.Provider
       value={{
         sendBroadcastMessage,
-        broadcastmessage,
-        setBroadcastMessage,
         lastMessage,
         createRoom
       }}

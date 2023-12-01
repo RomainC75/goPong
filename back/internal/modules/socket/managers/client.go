@@ -46,7 +46,7 @@ func (c *Client) readMessages(){
 		if err != nil {
 			log.Println("=> err : ", err.Error())
 		}
-		fmt.Printf("=> ", message)
+		fmt.Printf("=> inside Client", message)
 		fmt.Println("type : ", message.Type)
 		// myChan <- message.Content["message"]
 		
@@ -55,7 +55,15 @@ func (c *Client) readMessages(){
 			newContent := message.Content
 			newContent["userId"] = c.userData.UserId.String()
 			newContent["userEmail"] = c.userData.UserEmail
-			c.manager.BroadcastMessage("BROADCAST", newContent)
+
+
+			// c.manager.BroadcastMessage("BROADCAST", newContent)
+			wsMessage:= SocketMessage.WebSocketMessage{
+				Type: "BROADCAST",
+				Content: newContent,
+			}
+			c.manager.broadcastC <- wsMessage
+
 			break
 		case "CREATE_ROOM":
 			fmt.Println("===> CREAT_ROOM")

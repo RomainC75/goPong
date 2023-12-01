@@ -20,7 +20,7 @@ type ManagerInterface interface{
 	ServeWS(w gin.ResponseWriter , r *http.Request, userData UserData)
 	AddClient(client *Client)
 	RemoveClient(client *Client)
-	BroadcastMessage(mType string, message map[string]string)
+	BroadcastMessage()
 }
 
 type Hub struct{
@@ -46,13 +46,17 @@ type Manager struct {
 	hubs []Hub
 	sync.RWMutex
 	rooms RoomList
+	broadcastC chan SocketMessage.WebSocketMessage
 }
 
 func New() *Manager{
-	return &Manager{
+	manager:= Manager{
 		clients: make(ClientList),
 		rooms: make(RoomList),
+		broadcastC: make(chan SocketMessage.WebSocketMessage),
 	}
+	go manager.BroadcastMessage()
+	return &manager
 }
 
 func (m *Manager) ServeWS(w gin.ResponseWriter , r *http.Request, userData UserData){
@@ -108,7 +112,12 @@ func (m *Manager) CreateRoom(message SocketMessage.WebSocketMessage, client *Cli
 	
 	fmt.Println("CreateRoom : ", bcMessage)
 
-	m.BroadcastMessage("ROOM_CREATED", bcMessage)
+	// m.BroadcastMessage(, bcMessage)
+	wsMessage:= SocketMessage.WebSocketMessage{
+		Type: "ROOM_CREATED",
+		Content: bcMessage,
+	}
+	m.broadcastC <- wsMessage
 	fmt.Println("post broadcast")
 	//notify users
 
@@ -124,21 +133,25 @@ func (m *Manager) CreateRoom(message SocketMessage.WebSocketMessage, client *Cli
 
 
 
-func (m *Manager) BroadcastMessage(mType string, message map[string]string){
-	fmt.Println("broadcast beginning function")
-	m.Lock()
-	defer m.Unlock()
-	fmt.Println("lock ? ")
-	newMessage := SocketMessage.WebSocketMessage{
-		Type: mType,
-		Content: message,
-	}
-	fmt.Println("==> broadcast out : ", newMessage)
+func (m *Manager) BroadcastMessage(){
+	for{
+		select{
+		case wsMessage, _ := <- m.broadcastC:
+			// mType string, message map[string]string
+			fmt.Println("broadcast beginning function")
+			// m.Lock()
+			// defer m.Unlock()
+			fmt.Println("lock ? ")
+			
+			fmt.Println("==> broadcast out : ", wsMessage)
 
-	for client := range m.clients{
-		// client.connection.WriteJSON(newMessage)
-		fmt.Println("send.....")
-		b, _ := json.Marshal(newMessage)
-		client.egress <- b
+			for client := range m.clients{
+				// client.connection.WriteJSON(newMessage)
+				fmt.Println("send.....")
+				b, _ := json.Marshal(wsMessage)
+				client.egress <- b
+			}
+		}
 	}
+	
 }

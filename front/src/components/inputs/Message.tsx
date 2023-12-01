@@ -4,19 +4,25 @@ import { SocketContextInterface } from "../../@types/socketContext.type";
 
 
 const Message = (): JSX.Element => {
-    const { sendBroadcastMessage } = useContext(
-        SocketContext
-      ) as SocketContextInterface
+  const { sendBroadcastMessage } = useContext(
+      SocketContext
+    ) as SocketContextInterface
 
   const [message, setMessage] = useState<string>('');
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setMessage(e.target.value)
   }
+
+  const handleSendMessage = () =>{
+    sendBroadcastMessage(message)
+    setMessage("")
+  }
+
   return (
     <div>
       <input id='input' type='text' value={message} onChange={handleChange } />
-      <button onClick={sendBroadcastMessage}>send message</button>
+      <button onClick={handleSendMessage}>send messages</button>
     </div>
   )
 }
