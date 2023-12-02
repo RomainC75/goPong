@@ -8,7 +8,9 @@ export enum EWsMessageTypeIn {
   roomCreatedByYou = 'ROOM_CREATED_BYYOU',
   roomMessage = 'ROOM_MESSAGE',
   connectedToRoom = 'CONNECTED_TO_ROOM',
-  newConnectionToRoom = 'NEW_CONNECTION_TO_ROOM'
+  newConnectionToRoom = 'NEW_CONNECTION_TO_ROOM',
+  disconnectedFromRoom = 'DISCONNECTED_FROM_ROOM',
+  userDisconnectedFromRoom = 'USER_DISCONNECTED_FROM_ROOM'
 }
 
 export enum EWsMessageTypeOut {
@@ -17,6 +19,7 @@ export enum EWsMessageTypeOut {
   connectToRoom = 'CONNECT_TO_ROOM',
   createRoom = 'CREATE_ROOM',
   sendToRoom = 'SEND_TO_ROOM',
+  disconnectFromRoom = 'DISCONNECT_FROM_ROOM'
 }
 
 export interface IwebSocketMessageOut {

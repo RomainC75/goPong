@@ -24,6 +24,7 @@ type ManagerInterface interface{
 	BroadcastMessage(mType string, content map[string]string )
 	CreateRoom(message SocketMessage.WebSocketMessage, client *Client)SocketMessage.WebSocketMessage
 	AddUserToRoom(roomUuid uuid.UUID, client *Client) error
+	DisconnectUserFromRoom(c *Client)
 }
 
 type Hub struct{
@@ -142,9 +143,45 @@ func (m *Manager) AddUserToRoom(roomUuid uuid.UUID, client *Client) error {
 	// TODO : no room found
 }
 
-// func (m *Manager) DeleteRoom(message SocketMessage.WebSocketMessage){
+func (m *Manager) DisconnectUserFromRoom(c *Client){
+	// m.Lock()
+	// defer m.Unlock()
 
-// }
+	wsMessage := SocketMessage.WebSocketMessage{
+		Type: "DISCONNECTED_FROM_ROOM",
+		Content: map[string]string{
+			"name": c.Room.Name,
+			"id": c.Room.Id.String(),
+		},
+	}
+
+	room := c.Room
+	// remove client from room in the roomList OR delete Room
+	if len(room.Clients)==1{
+		// remove room from the roomList in Manager
+		delete(m.rooms, room)
+	}else{
+		// remove client from room in the roomList
+		delete(room.Clients, c)
+	}
+	
+	// remove room from client
+	c.Room = nil
+	
+	// notify client
+	b, _ := json.Marshal(wsMessage)
+	c.egress <- b
+
+	// broadcast in room
+	wsMessage = SocketMessage.WebSocketMessage{
+		Type: "USER_DISCONNECTED_FROM_ROOM",
+		Content: map[string]string{
+			"email": c.userData.UserEmail,
+			"id": c.userData.UserId.String(),
+		},
+	}
+	SendMessageToRoom(room, wsMessage)
+}
 
 func SendMessageToRoom(room *Room, wsMessage SocketMessage.WebSocketMessage){
 	for client := range room.Clients{

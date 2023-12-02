@@ -1,4 +1,4 @@
-import { useState, createContext, type PropsWithChildren, useEffect } from 'react'
+import { useState, createContext, type PropsWithChildren, useEffect, useContext } from 'react'
 import { type SocketContextInterface } from '../@types/socketContext.type'
 import {
   EWsMessageTypeIn,
@@ -9,10 +9,15 @@ import {
   type IwebSocketMessageOut
 } from '../@types/socket.type'
 import useWebSocket from 'react-use-websocket'
+import { AuthContext } from './auth.context'
+import { AuthContextInterface } from '../@types/authContext.type'
 
 const SocketContext = createContext<SocketContextInterface | null>(null)
 
 const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
+  const { user } = useContext(
+    AuthContext
+  ) as AuthContextInterface
   const token: string | null = localStorage.getItem('authToken')
 
   const { sendMessage: sendWsMessage, lastMessage } =
@@ -65,6 +70,17 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
     sendWsMessage(JSON.stringify(msg))
   }
 
+  const disconnectFromRoom = (): void =>{
+    const msg: IwebSocketMessageOut = {
+      type: EWsMessageTypeOut.disconnectFromRoom,
+      content:{
+        userId: user?.id,
+        userEmail: user?.email
+      }
+    }
+    sendWsMessage(JSON.stringify(msg))
+  }
+
   useEffect(() => {
     if (lastMessage !== null) {
       console.log('=> last message : ', lastMessage)
@@ -86,6 +102,13 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         case EWsMessageTypeIn.roomMessage:
           setRoomMessages(roomMessages => ([...roomMessages, message.content]))
           break
+        case EWsMessageTypeIn.disconnectedFromRoom:
+          setRoomMessages([])
+          setRoom(null)
+          break
+        case EWsMessageTypeIn.userDisconnectedFromRoom:
+          console.log('=> user disconnected ! ', message.content)
+          break
       }
     }
   }, [lastMessage])
@@ -101,7 +124,8 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         availableRoomList,
         sendToRoom,
         roomMessages,
-        connectToRoom
+        connectToRoom,
+        disconnectFromRoom
       }}
     >
       {props.children}

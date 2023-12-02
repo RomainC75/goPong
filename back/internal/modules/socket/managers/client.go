@@ -92,6 +92,8 @@ func (c *Client) readMessages(){
 			}
 			m, _ := json.Marshal(wsMessage)
 			c.egress <- m
+		case "DISCONNECT_FROM_ROOM":
+			c.manager.DisconnectUserFromRoom(c)
 		}
 	}
 }

@@ -7,6 +7,7 @@ import Message from './components/inputs/Message'
 import { Room } from './components/Room'
 import RoomList from './components/RoomList'
 import MessageBox from './components/MessageBox'
+import DisconnectFromRoom from './components/DisconnectFromRoom'
 
 function App (): JSX.Element {
   const { broadcastMessages, room, availableRoomList } = useContext(
@@ -19,7 +20,7 @@ function App (): JSX.Element {
       <div>
         <Message/>
         <MessageBox messages={broadcastMessages}/>
-        {!room && <CreateRoom />}
+        {room ? <DisconnectFromRoom/> : <CreateRoom />}
       </div>
       <div>
         {room && <Room/>}

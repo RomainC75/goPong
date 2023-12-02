@@ -13,5 +13,6 @@ export interface SocketContextInterface {
   availableRoomList: IRoom[]
   sendToRoom: (message: string) => void
   connectToRoom: (roomId: string) => void
+  disconnectFromRoom: () => void
   // setMessages: (messages: Array<IwebSocketMessageIn | IwebSocketMessageOut>) => void
 }
