@@ -54,18 +54,13 @@ func (c *Client) readMessages(){
     	}
 
 		fmt.Println("=> inside Client", message)
-		fmt.Println("type : ", message.Type)
 		
 		switch message.Type {
 		case "BROADCAST":
 			newContent := message.Content
 			newContent["userId"] = c.userData.UserId.String()
 			newContent["userEmail"] = c.userData.UserEmail
-			wsMessage:= SocketMessage.WebSocketMessage{
-				Type: "BROADCAST",
-				Content: newContent,
-			}
-			c.manager.broadcastC <- wsMessage
+			c.manager.BroadcastMessage("BROADCAST", newContent)
 		case "CREATE_ROOM":
 			fmt.Println("===> CREAT_ROOM")
 			backMessage := c.manager.CreateRoom(message, c)

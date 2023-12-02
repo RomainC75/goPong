@@ -21,7 +21,7 @@ type ManagerInterface interface{
 	ServeWS(w gin.ResponseWriter , r *http.Request, userData UserData)
 	AddClient(client *Client)
 	RemoveClient(client *Client)
-	BroadcastMessage()
+	BroadcastMessage(mType string, content map[string]string )
 	CreateRoom(message SocketMessage.WebSocketMessage, client *Client)SocketMessage.WebSocketMessage
 	AddUserToRoom(roomUuid uuid.UUID, client *Client) error
 }
@@ -49,16 +49,13 @@ type Manager struct {
 	hubs []Hub
 	sync.RWMutex
 	rooms RoomList
-	broadcastC chan SocketMessage.WebSocketMessage
 }
 
 func New() *Manager{
 	manager:= Manager{
 		clients: make(ClientList),
 		rooms: make(RoomList),
-		broadcastC: make(chan SocketMessage.WebSocketMessage),
 	}
-	go manager.BroadcastMessage()
 	return &manager
 }
 
@@ -116,16 +113,7 @@ func (m *Manager) CreateRoom(message SocketMessage.WebSocketMessage, client *Cli
 	}
 	
 	fmt.Println("CreateRoom : ", bcMessage)
-
-	// m.BroadcastMessage(, bcMessage)
-	wsMessage:= SocketMessage.WebSocketMessage{
-		Type: "ROOM_CREATED",
-		Content: bcMessage,
-	}
-	m.broadcastC <- wsMessage
-
-
-	fmt.Println("post broadcast")
+	m.BroadcastMessage("ROOM_CREATED", bcMessage)
 	
 	//notify user
 	backMessage:= SocketMessage.WebSocketMessage{
@@ -135,7 +123,7 @@ func (m *Manager) CreateRoom(message SocketMessage.WebSocketMessage, client *Cli
 	return backMessage
 
 }
-/////////////////////////////////////
+
 func (m *Manager) AddUserToRoom(roomUuid uuid.UUID, client *Client) error {
 	for room := range m.rooms{
 		if room.Id.String()==roomUuid.String(){
@@ -166,26 +154,20 @@ func SendMessageToRoom(room *Room, wsMessage SocketMessage.WebSocketMessage){
 	}
 }
 
-func (m *Manager) BroadcastMessage(){
-	// TODO : try withou m.broadcastC
-	for{
-		select{
-		case wsMessage, _ := <- m.broadcastC:
-			// mType string, message map[string]string
-			fmt.Println("broadcast beginning function")
-			// m.Lock()
-			// defer m.Unlock()
-			fmt.Println("lock ? ")
-			
-			fmt.Println("==> broadcast out : ", wsMessage)
-
-			for client := range m.clients{
-				// client.connection.WriteJSON(newMessage)
-				fmt.Println("send.....")
-				b, _ := json.Marshal(wsMessage)
-				client.egress <- b
-			}
-		}
-	}
+func (m *Manager) BroadcastMessage(mType string, content map[string]string ){
+	fmt.Println("broadcast beginning function")
+	// m.Lock()
+	// defer m.Unlock()
 	
+	wsMessage := SocketMessage.WebSocketMessage{
+		Type: mType,
+		Content: content,
+	}
+	fmt.Println("==> broadcast out : ", wsMessage)
+
+	for client := range m.clients{
+		fmt.Println("send.....")
+		b, _ := json.Marshal(wsMessage)
+		client.egress <- b
+	}
 }

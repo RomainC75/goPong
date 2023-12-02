@@ -1,10 +1,9 @@
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import './App.css'
 import { SocketContext } from './context/socket.context'
 import CreateRoom from './components/inputs/CreateRoom'
 import { type SocketContextInterface } from './@types/socketContext.type'
 import Message from './components/inputs/Message'
-import { EWsMessageTypeIn } from './@types/socket.type'
 import { Room } from './components/Room'
 import RoomList from './components/RoomList'
 import MessageBox from './components/MessageBox'
@@ -20,7 +19,7 @@ function App (): JSX.Element {
       <div>
         <Message/>
         <MessageBox messages={broadcastMessages}/>
-        <CreateRoom />
+        {!room && <CreateRoom />}
       </div>
       <div>
         {room && <Room/>}
