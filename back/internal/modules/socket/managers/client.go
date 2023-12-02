@@ -23,6 +23,7 @@ type Client struct {
 	manager *Manager
 	// !!! avoid concurrent writes on the socket connection (unbuffered chan :-) ) !!!
 	egress chan []byte
+	Room *Room
 }
 
 func NewClient(conn *websocket.Conn, manager *Manager, userData UserData) *Client{
@@ -75,28 +76,26 @@ func (c *Client) readMessages(){
 				Content: newContent,
 			}
 			c.manager.broadcastC <- wsMessage
-
-			break
 		case "CREATE_ROOM":
 			fmt.Println("===> CREAT_ROOM")
 			backMessage := c.manager.CreateRoom(message, c)
 			m, _ := json.Marshal(backMessage)
 			c.egress <- m
+		case "SEND_TO_ROOM":
+			fmt.Println("send to room")
+			if c.Room != nil{
+				newContent := message.Content
+				newContent["userId"] = c.userData.UserId.String()
+				newContent["userEmail"] = c.userData.UserEmail
+				wsMessage:= SocketMessage.WebSocketMessage{
+					Type: "ROOM_MESSAGE",
+					Content: newContent,
+				}
+				SendMessageToRoom(c.Room, wsMessage)
+			}
 		}
 		
 
-
-		
-		
-		// b, _ := json.Marshal(message)
-		// c.egress <- b
-		// // broadcast
-		// for wsclient := range c.manager.clients{
-		// 	wsclient.egress <- payload
-		// }
-
-		// log.Println(messageType)
-		// log.Println(string(payload))
 	}
 }
 

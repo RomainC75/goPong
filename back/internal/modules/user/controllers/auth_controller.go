@@ -63,5 +63,6 @@ func (controller *Controller) HandleSignin(c *gin.Context){
 
 func (controller *Controller) Verify(c *gin.Context){
 	id, _ := c.Get("user_id")
-	c.JSON(http.StatusAccepted, gin.H{"id": id})
+	email, _ := c.Get("user_email")
+	c.JSON(http.StatusAccepted, gin.H{"id": id, "email": email})
 }

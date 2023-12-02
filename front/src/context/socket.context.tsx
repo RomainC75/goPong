@@ -3,6 +3,7 @@ import { type SocketContextInterface } from '../@types/socketContext.type'
 import {
   EWsMessageTypeIn,
   EWsMessageTypeOut,
+  IWebSocketMessageContent,
   type IRoom,
   type IwebSocketMessageIn,
   type IwebSocketMessageOut
@@ -20,7 +21,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
   const [messages, setMessages] = useState<Array<IwebSocketMessageIn | IwebSocketMessageOut>>([])
   const [room, setRoom] = useState<IRoom | null>(null)
   const [availableRoomList, setAvailableRoomList] = useState<IRoom[]>([])
-  const [roomMessages, setRoomMessages] = useState<Array<IwebSocketMessageIn | IwebSocketMessageOut>>([])
+  const [roomMessages, setRoomMessages] = useState<IWebSocketMessageContent[]>([])
   // const [broadcastmessage, setBroadcastMessage] = useState<string>('')
 
   const sendBroadcastMessage = (message: string): void => {

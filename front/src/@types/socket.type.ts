@@ -24,7 +24,13 @@ export interface IwebSocketMessageOut {
 
 export interface IwebSocketMessageIn {
   type: EWsMessageTypeIn
-  content: Record<string, any>
+  content: IWebSocketMessageContent
+}
+
+export interface IWebSocketMessageContent {
+    message: string
+    userEmail: string
+    userId: string
 }
 
 export interface WSMessage {

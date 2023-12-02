@@ -105,6 +105,8 @@ func (m *Manager) CreateRoom(message SocketMessage.WebSocketMessage, client *Cli
 	newRoom := NewRoom(roomName, m, client)
 	// add it to the room 
 	m.rooms[newRoom]=true
+	// add the room to the client
+	client.Room = newRoom
 
 	bcMessage := map[string]string{
 		"name": roomName,
@@ -132,15 +134,21 @@ func (m *Manager) CreateRoom(message SocketMessage.WebSocketMessage, client *Cli
 
 }
 
-// func (m *Manager) AddUserToRoom(){
+func (m *Manager) AddUserToRoom(client *Client){
 
-// }
+}
 
 // func (m *Manager) DeleteRoom(message SocketMessage.WebSocketMessage){
 
 // }
 
-
+func SendMessageToRoom(room *Room, wsMessage SocketMessage.WebSocketMessage){
+	for client := range room.Clients{
+		fmt.Println("send.....")
+		b, _ := json.Marshal(wsMessage)
+		client.egress <- b
+	}
+}
 
 func (m *Manager) BroadcastMessage(){
 	// TODO : try withou m.broadcastC

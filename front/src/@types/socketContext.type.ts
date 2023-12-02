@@ -1,4 +1,5 @@
 import {
+  IWebSocketMessageContent,
   type IRoom,
   type IwebSocketMessageIn,
   type IwebSocketMessageOut
@@ -10,7 +11,7 @@ export interface SocketContextInterface {
   sendBroadcastMessage: (message: string) => void
   createRoom: (name: string) => void
   messages: Array<IwebSocketMessageIn | IwebSocketMessageOut>
-  roomMessages: Array<IwebSocketMessageIn | IwebSocketMessageOut>
+  roomMessages: IWebSocketMessageContent[]
   availableRoomList: IRoom[]
   sendToRoom: (message: string) => void
   // setMessages: (messages: Array<IwebSocketMessageIn | IwebSocketMessageOut>) => void
