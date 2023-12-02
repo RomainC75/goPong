@@ -1,20 +1,20 @@
 export enum EWsMessageTypeIn {
-  message = 'MESSAGE',
-  idAssigned = 'IDASSIGNED',
-  memberJoin = 'MEMBERJOIN',
-  memberLeave = 'MEMBERLEAVE',
-  broadcast = 'BROADCAST',
-  roomCreated = 'ROOM_CREATED',
-  roomCreatedByYou = 'ROOM_CREATED_BYYOU',
-  roomMessage = 'ROOM_MESSAGE'
+  message = "MESSAGE",
+  idAssigned = "IDASSIGNED",
+  memberJoin = "MEMBERJOIN",
+  memberLeave = "MEMBERLEAVE",
+  broadcast = "BROADCAST",
+  roomCreated = "ROOM_CREATED",
+  roomCreatedByYou = "ROOM_CREATED_BYYOU",
+  roomMessage = "ROOM_MESSAGE",
 }
 
 export enum EWsMessageTypeOut {
-  message = 'MESSAGE',
-  broadcast = 'BROADCAST',
-  connectToRoom = 'CONNECT_TO_ROOM',
-  createRoom = 'CREATE_ROOM',
-  sendToRoom = 'SEND_TO_ROOM',
+  message = "MESSAGE",
+  broadcast = "BROADCAST",
+  connectToRoom = "CONNECT_TO_ROOM",
+  createRoom = "CREATE_ROOM",
+  sendToRoom = "SEND_TO_ROOM",
 }
 
 export interface IwebSocketMessageOut {
@@ -28,9 +28,9 @@ export interface IwebSocketMessageIn {
 }
 
 export interface IWebSocketMessageContent {
-    message: string
-    userEmail: string
-    userId: string
+  message: string
+  userEmail: string
+  userId: string
 }
 
 export interface WSMessage {
@@ -43,6 +43,6 @@ export interface WSMessage {
 }
 
 export interface IRoom {
-    name: string
-    id: string
+  name: string
+  id: string
 }

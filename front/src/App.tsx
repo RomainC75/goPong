@@ -15,16 +15,20 @@ function App (): JSX.Element {
 
   return (
     <div className='App'>
-      <Message/>
-      <CreateRoom />
-      <ul>
-        {messages.map((message, i) => (
-          <li key={i} className={message.type === EWsMessageTypeIn.broadcast ? 'broadcast' : 'message' }>{message.content.message}</li>
-        ))}
-      </ul>
-
-      {room && <Room/>}
-      {availableRoomList && <RoomList/>}
+      <h1>Tron</h1>
+      <div>
+        <Message/>
+        <ul>
+          {messages.map((message, i) => (
+            <li key={i} className={message.type === EWsMessageTypeIn.broadcast ? 'broadcast' : 'message' }>{message.content.message}</li>
+          ))}
+        </ul>
+        <CreateRoom />
+      </div>
+      <div>
+        {room && <Room/>}
+        {availableRoomList && <RoomList/>}
+      </div>
     </div>
   )
 }

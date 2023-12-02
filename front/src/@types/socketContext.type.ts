@@ -1,5 +1,5 @@
 import {
-  IWebSocketMessageContent,
+  type IWebSocketMessageContent,
   type IRoom,
   type IwebSocketMessageIn,
   type IwebSocketMessageOut
