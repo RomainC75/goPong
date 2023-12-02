@@ -7,9 +7,10 @@ import Message from './components/inputs/Message'
 import { EWsMessageTypeIn } from './@types/socket.type'
 import { Room } from './components/Room'
 import RoomList from './components/RoomList'
+import MessageBox from './components/MessageBox'
 
 function App (): JSX.Element {
-  const { messages, room, availableRoomList } = useContext(
+  const { broadcastMessages, room, availableRoomList } = useContext(
     SocketContext
   ) as SocketContextInterface
 
@@ -18,11 +19,12 @@ function App (): JSX.Element {
       <h1>Tron</h1>
       <div>
         <Message/>
-        <ul>
+        {/* <ul>
           {messages.map((message, i) => (
             <li key={i} className={message.type === EWsMessageTypeIn.broadcast ? 'broadcast' : 'message' }>{message.content.message}</li>
           ))}
-        </ul>
+        </ul> */}
+        <MessageBox messages={broadcastMessages}/>
         <CreateRoom />
       </div>
       <div>

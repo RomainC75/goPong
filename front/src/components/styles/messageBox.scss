@@ -1,0 +1,9 @@
+.MessageBox{
+    & .sent{
+        color: green;
+    }
+    & .received{
+        text-align: right;
+        color: red;
+    }
+}

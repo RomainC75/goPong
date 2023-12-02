@@ -18,7 +18,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
   const { sendMessage: sendWsMessage, lastMessage } =
     useWebSocket<IwebSocketMessageIn>(`ws://localhost:5000/ws?token=${token ?? ''}`)
 
-  const [messages, setMessages] = useState<Array<IwebSocketMessageIn | IwebSocketMessageOut>>([])
+  const [broadcastMessages, setBroadcastMessages] = useState<IWebSocketMessageContent[]>([])
   const [room, setRoom] = useState<IRoom | null>(null)
   const [availableRoomList, setAvailableRoomList] = useState<IRoom[]>([])
   const [roomMessages, setRoomMessages] = useState<IWebSocketMessageContent[]>([])
@@ -45,7 +45,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
     sendWsMessage(JSON.stringify(msg))
   }
 
-  const sendToRoom = (message: string) => {
+  const sendToRoom = (message: string): void => {
     const msg: IwebSocketMessageOut = {
       type: EWsMessageTypeOut.sendToRoom,
       content: {
@@ -61,7 +61,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
       const message = JSON.parse(lastMessage.data)
       switch (message.type) {
         case EWsMessageTypeIn.broadcast:
-          setMessages(messages => ([...messages, message] as Array<IwebSocketMessageIn | IwebSocketMessageOut>))
+          setBroadcastMessages(messages => ([...messages, message.content]))
           break
         case EWsMessageTypeIn.roomCreatedByYou:
           setRoom(message.content)
@@ -82,7 +82,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         sendBroadcastMessage,
         lastMessage,
         createRoom,
-        messages,
+        broadcastMessages,
         room,
         availableRoomList,
         sendToRoom,
