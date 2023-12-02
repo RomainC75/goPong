@@ -2,6 +2,7 @@ package managers
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -22,6 +23,7 @@ type ManagerInterface interface{
 	RemoveClient(client *Client)
 	BroadcastMessage()
 	CreateRoom(message SocketMessage.WebSocketMessage, client *Client)SocketMessage.WebSocketMessage
+	AddUserToRoom(roomUuid uuid.UUID, client *Client) error
 }
 
 type Hub struct{
@@ -133,9 +135,23 @@ func (m *Manager) CreateRoom(message SocketMessage.WebSocketMessage, client *Cli
 	return backMessage
 
 }
+/////////////////////////////////////
+func (m *Manager) AddUserToRoom(roomUuid uuid.UUID, client *Client) error {
+	for room := range m.rooms{
+		if room.Id.String()==roomUuid.String(){
+			room.AddClient(client)
+			client.Room=room
 
-func (m *Manager) AddUserToRoom(client *Client){
-
+			wsMessage:= SocketMessage.WebSocketMessage{
+				Type: "NEW_CONNECTION_TO_ROOM",
+				Content: map[string]string{"roomId": roomUuid.String(), "userEmail": client.userData.UserEmail},
+			}
+			room.BroadcastMessage(wsMessage)
+			return nil
+		}
+	}
+	return errors.New("not found")
+	// TODO : no room found
 }
 
 // func (m *Manager) DeleteRoom(message SocketMessage.WebSocketMessage){

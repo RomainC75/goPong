@@ -1,6 +1,12 @@
 package managers
 
-import "github.com/google/uuid"
+import (
+	"encoding/json"
+	"fmt"
+
+	"github.com/google/uuid"
+	SocketMessage "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/requests"
+)
 
 
 type RoomList map[*Room]bool
@@ -31,3 +37,11 @@ func (r *Room)RemoveClient(client *Client){
 	delete(r.Clients,client)
 }
 
+func (r *Room)BroadcastMessage(wsMessage  SocketMessage.WebSocketMessage){
+	for client := range r.Clients{
+		// client.connection.WriteJSON(newMessage)
+		fmt.Println("send.....")
+		b, _ := json.Marshal(wsMessage)
+		client.egress <- b
+	}
+}

@@ -34,6 +34,16 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
     sendWsMessage(JSON.stringify(msg))
   }
 
+  const connectToRoom = (roomId: string): void =>{
+    const msg: IwebSocketMessageOut = {
+      type: EWsMessageTypeOut.connectToRoom,
+      content: {
+        roomId
+      }
+    }
+    sendWsMessage(JSON.stringify(msg))
+  }
+
   const createRoom = (roomName: string): void => {
     console.log('=> click ', roomName)
     const msg: IwebSocketMessageOut = {
@@ -86,7 +96,8 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         room,
         availableRoomList,
         sendToRoom,
-        roomMessages
+        roomMessages,
+        connectToRoom
       }}
     >
       {props.children}

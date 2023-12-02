@@ -93,6 +93,24 @@ func (c *Client) readMessages(){
 				}
 				SendMessageToRoom(c.Room, wsMessage)
 			}
+		case "CONNECT_TO_ROOM":
+			fmt.Println("=> try to connect to Room : ", message.Content["roomId"])
+			roomUuid, _ := uuid.Parse(message.Content["roomId"])
+			err := c.manager.AddUserToRoom( roomUuid, c)
+			if err != nil{
+				fmt.Printf("room not found ! ")
+			}
+
+			// send to client
+			wsMessage:= SocketMessage.WebSocketMessage{
+				Type: "CONNECTED_TO_ROOM",
+				Content: map[string]string{"roomId": message.Content["roomId"]},
+			}
+			m, _ := json.Marshal(wsMessage)
+			c.egress <- m
+
+
+
 		}
 		
 

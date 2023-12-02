@@ -1,20 +1,22 @@
 export enum EWsMessageTypeIn {
-  message = "MESSAGE",
-  idAssigned = "IDASSIGNED",
-  memberJoin = "MEMBERJOIN",
-  memberLeave = "MEMBERLEAVE",
-  broadcast = "BROADCAST",
-  roomCreated = "ROOM_CREATED",
-  roomCreatedByYou = "ROOM_CREATED_BYYOU",
-  roomMessage = "ROOM_MESSAGE",
+  message = 'MESSAGE',
+  idAssigned = 'IDASSIGNED',
+  memberJoin = 'MEMBERJOIN',
+  memberLeave = 'MEMBERLEAVE',
+  broadcast = 'BROADCAST',
+  roomCreated = 'ROOM_CREATED',
+  roomCreatedByYou = 'ROOM_CREATED_BYYOU',
+  roomMessage = 'ROOM_MESSAGE',
+  connectedToRoom = 'CONNECTED_TO_ROOM',
+  newConnectionToRoom = 'NEW_CONNECTION_TO_ROOM'
 }
 
 export enum EWsMessageTypeOut {
-  message = "MESSAGE",
-  broadcast = "BROADCAST",
-  connectToRoom = "CONNECT_TO_ROOM",
-  createRoom = "CREATE_ROOM",
-  sendToRoom = "SEND_TO_ROOM",
+  message = 'MESSAGE',
+  broadcast = 'BROADCAST',
+  connectToRoom = 'CONNECT_TO_ROOM',
+  createRoom = 'CREATE_ROOM',
+  sendToRoom = 'SEND_TO_ROOM',
 }
 
 export interface IwebSocketMessageOut {

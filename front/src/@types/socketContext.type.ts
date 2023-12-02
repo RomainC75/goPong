@@ -12,5 +12,6 @@ export interface SocketContextInterface {
   roomMessages: IWebSocketMessageContent[]
   availableRoomList: IRoom[]
   sendToRoom: (message: string) => void
+  connectToRoom: (roomId: string) => void
   // setMessages: (messages: Array<IwebSocketMessageIn | IwebSocketMessageOut>) => void
 }
