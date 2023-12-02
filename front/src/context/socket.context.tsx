@@ -76,6 +76,9 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         case EWsMessageTypeIn.roomCreatedByYou:
           setRoom(message.content)
           break
+        case EWsMessageTypeIn.connectedToRoom:
+          setRoom(message.content)
+          break
         case EWsMessageTypeIn.roomCreated:
           setAvailableRoomList(roomList => ([...roomList, message.content]))
           break

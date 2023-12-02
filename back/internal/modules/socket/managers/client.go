@@ -104,12 +104,12 @@ func (c *Client) readMessages(){
 			// send to client
 			wsMessage:= SocketMessage.WebSocketMessage{
 				Type: "CONNECTED_TO_ROOM",
-				Content: map[string]string{"roomId": message.Content["roomId"]},
+				Content: map[string]string{"id": message.Content["roomId"],"name": c.Room.Name},
 			}
 			m, _ := json.Marshal(wsMessage)
 			c.egress <- m
 
-
+			// broadcast
 
 		}
 		

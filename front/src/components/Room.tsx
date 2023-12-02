@@ -5,6 +5,7 @@ import { AuthContext } from '../context/auth.context';
 import { type AuthContextInterface } from '../@types/authContext.type';
 import { TextField, Button } from '@mui/material';
 import './styles/room.scss';
+import MessageBox from './MessageBox';
 
 export const Room = (): JSX.Element => {
   const { room, sendToRoom, roomMessages } = useContext(
@@ -25,6 +26,7 @@ export const Room = (): JSX.Element => {
   return (
     <div className='Room'>
       <h3>Room : {room?.name}</h3>
+      <MessageBox messages={roomMessages}/>
       <div>
         <TextField
           id='outlined-basic'
@@ -38,16 +40,6 @@ export const Room = (): JSX.Element => {
           Send Message
         </Button>
       </div>
-      <li>
-        {roomMessages.map((message, i) => (
-          <li
-            key={i}
-            className={message.userEmail === user?.email ? 'sent' : 'received'}
-          >
-            {message.message}
-          </li>
-        ))}
-      </li>
     </div>
   );
 };

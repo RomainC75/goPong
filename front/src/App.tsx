@@ -19,11 +19,6 @@ function App (): JSX.Element {
       <h1>Tron</h1>
       <div>
         <Message/>
-        {/* <ul>
-          {messages.map((message, i) => (
-            <li key={i} className={message.type === EWsMessageTypeIn.broadcast ? 'broadcast' : 'message' }>{message.content.message}</li>
-          ))}
-        </ul> */}
         <MessageBox messages={broadcastMessages}/>
         <CreateRoom />
       </div>

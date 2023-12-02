@@ -1,9 +1,32 @@
+@import '../../variables';
+
 .MessageBox{
-    & .sent{
-        color: green;
-    }
-    & .received{
-        text-align: right;
-        color: red;
+    box-shadow: 6px 5px 5px rgb(223, 222, 222);
+    max-height: 400px;
+    overflow-y: scroll;
+    & > ul{
+        display: flex;
+        flex-direction: column;
+        width:100%;
+        padding-left: 0;
+        li{
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 0 1rem 2rem 1rem;
+            list-style-type: none;
+            box-shadow: 6px 5px 5px rgb(223, 222, 222);
+        }
+        & .sent{
+            color: $messageOutColor;
+            align-self: flex-start;
+            background: $messageOutBackground;
+        }
+        & .received{
+            align-self: flex-end;
+            background: $messageInBackground;
+            text-align: right;
+            color: $messageInColor;
+            
+        }
     }
 }
