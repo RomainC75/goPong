@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { type IWebSocketMessageContent } from '../@types/socket.type'
 import { AuthContext } from '../context/auth.context'
 import { type AuthContextInterface } from '../@types/authContext.type'
@@ -13,9 +13,18 @@ const MessageBox = ({ messages }: IMessageBox) => {
     AuthContext
   ) as AuthContextInterface
 
+  useEffect(()=>{
+    console.log("=> mmessages : ", messages)
+  }, [messages])
+
   return <div className='MessageBox'>
     <ul>
-        {messages.map((message, i) => <li key={ message.userId + i + message.message } className={message.userEmail === user?.email ? 'sent' : 'received'}>{message.message}</li>)}
+        {messages.map((message, i) => 
+        <li key={message.userId + i + message.message} className={message.userEmail === user?.email ? 'sent' : 'received'}>
+          {message.userEmail !== user?.email && <p className="name">{message.userEmail}</p>}
+          <p className={message.userEmail === user?.email ? 'sent bubble' : 'received bubble'}>{message.message}</p>
+        </li>
+        )}
     </ul>
   </div>
 }

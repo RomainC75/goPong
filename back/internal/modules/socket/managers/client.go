@@ -21,7 +21,6 @@ type Client struct {
 	userData UserData
 	connection *websocket.Conn
 	manager *Manager
-	// !!! avoid concurrent writes on the socket connection (unbuffered chan :-) ) !!!
 	egress chan []byte
 	Room *Room
 }
@@ -38,39 +37,30 @@ func NewClient(conn *websocket.Conn, manager *Manager, userData UserData) *Clien
 func (c *Client) readMessages(){
 	fmt.Printf("listening")
 	defer func(){
-		// cleanup connection
 		c.manager.RemoveClient(c)
 	}()
 	for{
-		messageType, payload, err := c.connection.ReadMessage()
+		_, payload, err := c.connection.ReadMessage()
 		if err != nil{
 			if websocket.IsUnexpectedCloseError(err , websocket.CloseGoingAway, websocket.CloseAbnormalClosure){
 				log.Printf("error reading message: %v", err)
 			}
 			break
 		}
-		fmt.Println(messageType, payload)
-
-
 		var message SocketMessage.WebSocketMessage
 		if err := json.Unmarshal(payload, &message); err != nil {
 			fmt.Printf("panic reading message ! ")
         	panic(err)
     	}
 
-		
-		fmt.Printf("=> inside Client", message)
+		fmt.Println("=> inside Client", message)
 		fmt.Println("type : ", message.Type)
-		// myChan <- message.Content["message"]
 		
 		switch message.Type {
 		case "BROADCAST":
 			newContent := message.Content
 			newContent["userId"] = c.userData.UserId.String()
 			newContent["userEmail"] = c.userData.UserEmail
-
-
-			// c.manager.BroadcastMessage("BROADCAST", newContent)
 			wsMessage:= SocketMessage.WebSocketMessage{
 				Type: "BROADCAST",
 				Content: newContent,
@@ -101,19 +91,13 @@ func (c *Client) readMessages(){
 				fmt.Printf("room not found ! ")
 			}
 
-			// send to client
 			wsMessage:= SocketMessage.WebSocketMessage{
 				Type: "CONNECTED_TO_ROOM",
 				Content: map[string]string{"id": message.Content["roomId"],"name": c.Room.Name},
 			}
 			m, _ := json.Marshal(wsMessage)
 			c.egress <- m
-
-			// broadcast
-
 		}
-		
-
 	}
 }
 

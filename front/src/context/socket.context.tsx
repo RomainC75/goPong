@@ -71,6 +71,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
       const message = JSON.parse(lastMessage.data)
       switch (message.type) {
         case EWsMessageTypeIn.broadcast:
+          console.log("=> message BRROADCAST received : ", message.content)
           setBroadcastMessages(messages => ([...messages, message.content]))
           break
         case EWsMessageTypeIn.roomCreatedByYou:
