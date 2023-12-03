@@ -23,9 +23,11 @@ type Client struct {
 	manager *Manager
 	egress chan []byte
 	Room *Room
+	Game *Game
 }
 
 func NewClient(conn *websocket.Conn, manager *Manager, userData UserData) *Client{
+	// TODO -> send notifications about actual state of rooms/games
 	return &Client{
 		userData: userData,
 		connection: conn,
@@ -63,9 +65,21 @@ func (c *Client) readMessages(){
 			c.manager.BroadcastMessage("BROADCAST", newContent)
 		case "CREATE_ROOM":
 			fmt.Println("===> CREAT_ROOM")
-			backMessage := c.manager.CreateRoom(message, c)
-			m, _ := json.Marshal(backMessage)
-			c.egress <- m
+			newRoom := c.manager.CreateRoom(message, c)
+			
+			// notify everyone
+			bcMessage := map[string]string{
+				"name": message.Content["roomName"],
+				"id": (*newRoom).Id.String(),
+			}
+			c.manager.BroadcastMessage("ROOM_CREATED", bcMessage)
+
+			// notify client
+			backMessage:= SocketMessage.WebSocketMessage{
+				Type: "ROOM_CREATED_BYYOU",
+				Content: bcMessage,
+			}
+			c.ResponseToClient(backMessage)
 		case "SEND_TO_ROOM":
 			fmt.Println("send to room")
 			if c.Room != nil{
@@ -90,10 +104,22 @@ func (c *Client) readMessages(){
 				Type: "CONNECTED_TO_ROOM",
 				Content: map[string]string{"id": message.Content["roomId"],"name": c.Room.Name},
 			}
-			m, _ := json.Marshal(wsMessage)
-			c.egress <- m
+			c.ResponseToClient(wsMessage)
 		case "DISCONNECT_FROM_ROOM":
 			c.manager.DisconnectUserFromRoom(c)
+		case "CREATE_GAME":
+			gameName := message.Content["gameName"]
+			newGameId := c.manager.CreateGame(c, gameName)
+			content := map[string]string{
+				"gameId": newGameId.String(),
+				"gameName": gameName,
+			}
+			wsMessage := SocketMessage.WebSocketMessage{
+				Type: "GAME_CREATED_BYYOU",
+				Content: content,
+			}
+			c.ResponseToClient(wsMessage)
+			c.manager.BroadcastMessage("GAME_CREATED", content)
 		}
 	}
 }
@@ -119,4 +145,10 @@ func (c *Client) writeMessages(){
 			log.Println("message sent")
 		}	
 	}
+}
+
+
+func (c *Client)ResponseToClient(message SocketMessage.WebSocketMessage){
+	m, _:= json.Marshal(message)
+	c.egress <- m
 }

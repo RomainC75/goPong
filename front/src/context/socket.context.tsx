@@ -81,6 +81,16 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
     sendWsMessage(JSON.stringify(msg))
   }
 
+  const createGame = (name: string): void =>{
+    const msg: IwebSocketMessageOut = {
+      type: EWsMessageTypeOut.createGame,
+      content:{
+        gameName: name
+      }
+    }
+    sendWsMessage(JSON.stringify(msg))
+  }
+
   useEffect(() => {
     if (lastMessage !== null) {
       console.log('=> last message : ', lastMessage)
@@ -109,6 +119,12 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         case EWsMessageTypeIn.userDisconnectedFromRoom:
           console.log('=> user disconnected ! ', message.content)
           break
+        case EWsMessageTypeIn.gameCreatedByYou:
+          console.log("=> created successfully!")
+          break
+        case EWsMessageTypeIn.gameCreated:
+          console.log("=> created ")
+          break
       }
     }
   }, [lastMessage])
@@ -125,7 +141,8 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         sendToRoom,
         roomMessages,
         connectToRoom,
-        disconnectFromRoom
+        disconnectFromRoom,
+        createGame
       }}
     >
       {props.children}

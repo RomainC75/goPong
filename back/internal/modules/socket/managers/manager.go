@@ -22,15 +22,19 @@ type ManagerInterface interface{
 	AddClient(client *Client)
 	RemoveClient(client *Client)
 	BroadcastMessage(mType string, content map[string]string )
-	CreateRoom(message SocketMessage.WebSocketMessage, client *Client)SocketMessage.WebSocketMessage
+	CreateRoom(message SocketMessage.WebSocketMessage, client *Client) *Room
 	AddUserToRoom(roomUuid uuid.UUID, client *Client) error
 	DisconnectUserFromRoom(c *Client)
+
+	CreateGame(c *Client, name string) uuid.UUID
+	AddClientToGame(gameId uuid.UUID,c *Client)error
 }
 
 type Hub struct{
 	uuid uuid.UUID
 	createdAt time.Time
 }
+
 
 var(
 	websocketUpgrader = websocket.Upgrader{
@@ -50,12 +54,14 @@ type Manager struct {
 	hubs []Hub
 	sync.RWMutex
 	rooms RoomList
+	games GameList
 }
 
 func New() *Manager{
 	manager:= Manager{
 		clients: make(ClientList),
 		rooms: make(RoomList),
+		games: make(GameList),
 	}
 	return &manager
 }
@@ -96,7 +102,7 @@ func (m *Manager) RemoveClient(client *Client){
 }
 
 
-func (m *Manager) CreateRoom(message SocketMessage.WebSocketMessage, client *Client)SocketMessage.WebSocketMessage{
+func (m *Manager) CreateRoom(message SocketMessage.WebSocketMessage, client *Client) *Room{
 	m.Lock()
 	defer m.Unlock()
 
@@ -108,21 +114,7 @@ func (m *Manager) CreateRoom(message SocketMessage.WebSocketMessage, client *Cli
 	// add the room to the client
 	client.Room = newRoom
 
-	bcMessage := map[string]string{
-		"name": roomName,
-		"id": (*newRoom).Id.String(),
-	}
-	
-	fmt.Println("CreateRoom : ", bcMessage)
-	m.BroadcastMessage("ROOM_CREATED", bcMessage)
-	
-	//notify user
-	backMessage:= SocketMessage.WebSocketMessage{
-		Type: "ROOM_CREATED_BYYOU",
-		Content: bcMessage,
-	}
-	return backMessage
-
+	return newRoom
 }
 
 func (m *Manager) AddUserToRoom(roomUuid uuid.UUID, client *Client) error {
@@ -140,7 +132,6 @@ func (m *Manager) AddUserToRoom(roomUuid uuid.UUID, client *Client) error {
 		}
 	}
 	return errors.New("not found")
-	// TODO : no room found
 }
 
 func (m *Manager) DisconnectUserFromRoom(c *Client){
@@ -183,6 +174,57 @@ func (m *Manager) DisconnectUserFromRoom(c *Client){
 	SendMessageToRoom(room, wsMessage)
 }
 
+func (m *Manager) BroadcastMessage(mType string, content map[string]string ){
+	// m.Lock()
+	// defer m.Unlock()
+	
+	wsMessage := SocketMessage.WebSocketMessage{
+		Type: mType,
+		Content: content,
+	}
+	
+	for client := range m.clients{
+		fmt.Println("send.....")
+		b, _ := json.Marshal(wsMessage)
+		client.egress <- b
+	}
+}
+
+func (m *Manager) CreateGame(c *Client, name string) uuid.UUID{
+	// create Room in manager for game
+	// message := SocketMessage.WebSocketMessage{
+		// 	Content: map[string]string{
+			// 		"name": c.userData.UserEmail,
+			// 	},
+			// }
+			// room := m.CreateRoom(message, c)
+			
+			// add game to manager
+			newGame := NewGame(m, c, name)
+			m.games[newGame]=true
+			
+			// add game to client
+			c.Game=newGame
+			
+			return newGame.Id
+		}
+		
+		func (m *Manager) AddClientToGame(gameId uuid.UUID,c *Client)error{
+			for game := range m.games{
+				if game.Id.String()==gameId.String(){
+					// add game to client
+					c.Game=game
+					
+					// add client to game
+					game.AddClient(c)
+					
+					fmt.Println("CLIENT added ! ")
+					return nil
+				}
+			}
+			return errors.New("game not found")
+		}
+		
 func SendMessageToRoom(room *Room, wsMessage SocketMessage.WebSocketMessage){
 	for client := range room.Clients{
 		fmt.Println("send.....")
@@ -191,20 +233,13 @@ func SendMessageToRoom(room *Room, wsMessage SocketMessage.WebSocketMessage){
 	}
 }
 
-func (m *Manager) BroadcastMessage(mType string, content map[string]string ){
-	fmt.Println("broadcast beginning function")
-	// m.Lock()
-	// defer m.Unlock()
-	
-	wsMessage := SocketMessage.WebSocketMessage{
-		Type: mType,
-		Content: content,
-	}
-	fmt.Println("==> broadcast out : ", wsMessage)
+func (m *Manager) BroadcastOnlineRooms(){
 
-	for client := range m.clients{
-		fmt.Println("send.....")
-		b, _ := json.Marshal(wsMessage)
-		client.egress <- b
+	rooms := []RoomBasicInfos{}
+	for room := range m.rooms{
+		rooms = append(rooms, RoomBasicInfos{
+			Id: room.Id,
+			Name: room.Name,
+		})
 	}
 }

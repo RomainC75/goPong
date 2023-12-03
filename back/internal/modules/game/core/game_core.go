@@ -11,6 +11,8 @@ import (
 	SocketMessage "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/requests"
 )
 
+type GameList map[*Game]bool
+
 type Command struct{
 	p1 string
 	p2 string
@@ -30,6 +32,8 @@ type Position struct{
 	x float64
 	y float64
 }
+
+
 
 func GameCore(conn *websocket.Conn){
 

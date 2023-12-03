@@ -11,9 +11,14 @@ import (
 
 type RoomList map[*Room]bool
 
+type RoomBasicInfos struct{
+	Id uuid.UUID
+	Name string
+}
 type Room struct{
 	Id uuid.UUID
 	Name string
+	RoomBasicInfos
 	Manager *Manager
 	Clients ClientList
 }
