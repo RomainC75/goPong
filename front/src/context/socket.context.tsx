@@ -6,7 +6,8 @@ import {
   IWebSocketMessageContent,
   type IRoom,
   type IwebSocketMessageIn,
-  type IwebSocketMessageOut
+  type IwebSocketMessageOut,
+  IGame
 } from '../@types/socket.type'
 import useWebSocket from 'react-use-websocket'
 import { AuthContext } from './auth.context'
@@ -26,6 +27,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
   const [broadcastMessages, setBroadcastMessages] = useState<IWebSocketMessageContent[]>([])
   const [room, setRoom] = useState<IRoom | null>(null)
   const [availableRoomList, setAvailableRoomList] = useState<IRoom[]>([])
+  const [availableGameList, setAvailableGameList] = useState<IGame[]>([])
   const [roomMessages, setRoomMessages] = useState<IWebSocketMessageContent[]>([])
   // const [broadcastmessage, setBroadcastMessage] = useState<string>('')
 
@@ -125,6 +127,10 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         case EWsMessageTypeIn.gameCreated:
           console.log("=> created ")
           break
+        case EWsMessageTypeIn.roomsGamesNotification:
+          console.log("=> NOTIFICATION : ", message.content)
+          setAvailableRoomList(message.content.rooms)
+          setAvailableGameList(message.content.games)
       }
     }
   }, [lastMessage])
@@ -138,6 +144,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         broadcastMessages,
         room,
         availableRoomList,
+        availableGameList,
         sendToRoom,
         roomMessages,
         connectToRoom,

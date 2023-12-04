@@ -14,6 +14,11 @@ type GameInterface interface {
 	NewGame(manager *Manager, c *Client, r *Room )*Game
 }
 
+type GameBasicInfos struct{
+	Id uuid.UUID
+	Name string
+}
+
 type Game struct{
 	Id uuid.UUID
 	Name string

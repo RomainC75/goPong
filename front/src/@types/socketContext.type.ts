@@ -1,6 +1,7 @@
 import {
   type IWebSocketMessageContent,
   type IRoom,
+  IGame,
 } from './socket.type'
 
 export interface SocketContextInterface {
@@ -11,6 +12,7 @@ export interface SocketContextInterface {
   broadcastMessages: IWebSocketMessageContent[]
   roomMessages: IWebSocketMessageContent[]
   availableRoomList: IRoom[]
+  availableGameList: IGame[]
   sendToRoom: (message: string) => void
   connectToRoom: (roomId: string) => void
   disconnectFromRoom: () => void

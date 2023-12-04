@@ -78,9 +78,9 @@ func (m *Manager) ServeWS(w gin.ResponseWriter , r *http.Request, userData UserD
 	client := NewClient(conn, m, userData)
 
 	m.AddClient(client)
-	
 	go client.readMessages()
 	go client.writeMessages()
+	m.NotifyClientStateOfRoomsAndGames(client)
 }
 
 func (m *Manager) AddClient(client *Client){
@@ -233,8 +233,7 @@ func SendMessageToRoom(room *Room, wsMessage SocketMessage.WebSocketMessage){
 	}
 }
 
-func (m *Manager) BroadcastOnlineRooms(){
-
+func (m *Manager) GetActualRoomsBasicInfos() []RoomBasicInfos{
 	rooms := []RoomBasicInfos{}
 	for room := range m.rooms{
 		rooms = append(rooms, RoomBasicInfos{
@@ -242,4 +241,32 @@ func (m *Manager) BroadcastOnlineRooms(){
 			Name: room.Name,
 		})
 	}
+	return rooms
+}
+
+func (m *Manager) GetActualGamesBasicInfos() []GameBasicInfos{
+	games := []GameBasicInfos{}
+	for game := range m.games{
+		games = append(games, GameBasicInfos{
+			Id: game.Id,
+			Name: game.Name,
+		})
+	}
+	return games
+}
+
+func (m *Manager) NotifyClientStateOfRoomsAndGames(c *Client){
+	rooms := m.GetActualRoomsBasicInfos()
+	bRooms, _ := json.Marshal(rooms)
+	games := m.GetActualGamesBasicInfos()
+	bGames, _ := json.Marshal(games)
+	wsMessage := SocketMessage.WebSocketMessage{
+		Type: "ROOMS_GAMES_NOTIFICATION",
+		Content: map[string]string{
+			"rooms": string(bRooms),
+			"games": string(bGames),
+		},
+	}
+	b, _ := json.Marshal(wsMessage)
+	c.egress <- b
 }

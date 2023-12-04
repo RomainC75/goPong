@@ -12,7 +12,8 @@ export enum EWsMessageTypeIn {
   disconnectedFromRoom = 'DISCONNECTED_FROM_ROOM',
   userDisconnectedFromRoom = 'USER_DISCONNECTED_FROM_ROOM',
   gameCreatedByYou = 'GAME_CREATED_BYYOU',
-  gameCreated = 'GAME_CREATED'
+  gameCreated = 'GAME_CREATED',
+  roomsGamesNotification = 'ROOMS_GAMES_NOTIFICATION',
 }
 
 export enum EWsMessageTypeOut {
@@ -51,6 +52,11 @@ export interface WSMessage {
 }
 
 export interface IRoom {
+  name: string
+  id: string
+}
+
+export interface IGame {
   name: string
   id: string
 }
