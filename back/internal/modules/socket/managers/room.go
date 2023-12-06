@@ -12,8 +12,8 @@ import (
 type RoomList map[*Room]bool
 
 type RoomBasicInfos struct{
-	Id uuid.UUID
-	Name string
+	Id uuid.UUID `json:"id"`
+	Name string `json:"name"`
 }
 type Room struct{
 	Id uuid.UUID

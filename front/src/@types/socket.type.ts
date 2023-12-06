@@ -24,6 +24,7 @@ export enum EWsMessageTypeOut {
   sendToRoom = 'SEND_TO_ROOM',
   disconnectFromRoom = 'DISCONNECT_FROM_ROOM',
   createGame = 'CREATE_GAME',
+  selectGame = 'SELECT_GAME'
 }
 
 export interface IwebSocketMessageOut {

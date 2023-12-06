@@ -111,8 +111,8 @@ func (c *Client) readMessages(){
 			gameName := message.Content["gameName"]
 			newGameId := c.manager.CreateGame(c, gameName)
 			content := map[string]string{
-				"gameId": newGameId.String(),
-				"gameName": gameName,
+				"id": newGameId.String(),
+				"name": gameName,
 			}
 			wsMessage := SocketMessage.WebSocketMessage{
 				Type: "GAME_CREATED_BYYOU",
@@ -120,6 +120,9 @@ func (c *Client) readMessages(){
 			}
 			c.ResponseToClient(wsMessage)
 			c.manager.BroadcastMessage("GAME_CREATED", content)
+		case "SELECT_GAME":
+			gameId, _ := uuid.Parse(message.Content["gameId"])
+			c.manager.AddClientToGame(gameId, c)
 		}
 	}
 }

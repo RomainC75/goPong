@@ -17,5 +17,6 @@ export interface SocketContextInterface {
   connectToRoom: (roomId: string) => void
   disconnectFromRoom: () => void
   createGame: (name: string) => void
+  selectGame: (id: string) => void
   // setMessages: (messages: Array<IwebSocketMessageIn | IwebSocketMessageOut>) => void
 }

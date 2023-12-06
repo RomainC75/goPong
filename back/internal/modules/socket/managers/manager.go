@@ -193,37 +193,42 @@ func (m *Manager) BroadcastMessage(mType string, content map[string]string ){
 func (m *Manager) CreateGame(c *Client, name string) uuid.UUID{
 	// create Room in manager for game
 	// message := SocketMessage.WebSocketMessage{
-		// 	Content: map[string]string{
-			// 		"name": c.userData.UserEmail,
-			// 	},
-			// }
-			// room := m.CreateRoom(message, c)
-			
-			// add game to manager
-			newGame := NewGame(m, c, name)
-			m.games[newGame]=true
-			
+	// 	Content: map[string]string{
+	// 		"name": c.userData.UserEmail,
+	// 	},
+	// }
+	// room := m.CreateRoom(message, c)
+	
+	// add game to manager
+	newGame := NewGame(m, c, name)
+	m.games[newGame]=true
+	
+	// add game to client
+	c.Game=newGame
+	
+	return newGame.Id
+}
+	
+func (m *Manager) AddClientToGame(gameId uuid.UUID,c *Client)error{
+	for game := range m.games{
+		if game.Id.String()==gameId.String() && game.Full==false {
 			// add game to client
-			c.Game=newGame
+			c.Game=game
 			
-			return newGame.Id
-		}
-		
-		func (m *Manager) AddClientToGame(gameId uuid.UUID,c *Client)error{
-			for game := range m.games{
-				if game.Id.String()==gameId.String(){
-					// add game to client
-					c.Game=game
-					
-					// add client to game
-					game.AddClient(c)
-					
-					fmt.Println("CLIENT added ! ")
-					return nil
-				}
+			// add client to game
+			game.AddClient(c)
+			fmt.Println("CLIENT added ! :", game.Clients)
+
+			if len(game.Clients)==game.MaxPlayerNumber{
+				game.Full=true
+				fmt.Printf("====================> LAUNCH GAME !! ")
 			}
-			return errors.New("game not found")
+			
+			return nil
 		}
+	}
+	return errors.New("game not found")
+}
 		
 func SendMessageToRoom(room *Room, wsMessage SocketMessage.WebSocketMessage){
 	for client := range room.Clients{
