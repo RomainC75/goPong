@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	GameCore "github.com/saegus/test-technique-romain-chenard/internal/modules/game/core"
 	SocketMessage "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/requests"
 )
 
@@ -24,21 +25,27 @@ type Game struct{
 	Name string
 	Manager *Manager 
 	Clients []*Client
-	GameCore int
+	GameCore *GameCore.GameCore
 	MaxPlayerNumber int
 	Full bool
+	CommandIn chan GameCore.CommandMessage
+	GameStateOut chan GameCore.GameStateMessage
 }
 
 func NewGame(manager *Manager, c *Client, name string )*Game{
 	newClientList := []*Client{c}
-
-	return &Game{
+	
+	g := &Game{
 		Id: uuid.New(),
 		Name: name,
 		Manager: manager,
 		Clients: newClientList,
 		MaxPlayerNumber: 2,
+		CommandIn: make(chan GameCore.CommandMessage, 1000),
+		GameStateOut: make(chan GameCore.GameStateMessage, 1000),
 	}
+	go g.writeMessages()
+	return g
 }
 
 func (g *Game) BroadcastMessage(wsMessage SocketMessage.WebSocketMessage){
@@ -66,6 +73,7 @@ func (g *Game) AddClient(client *Client){
 		},
 	}
 	g.BroadcastMessage(message)
+	g.GameCore = GameCore.NewGameState(g.CommandIn, g.GameStateOut)
 }
 
 func (g *Game) RemoveClient(client *Client){
@@ -73,6 +81,24 @@ func (g *Game) RemoveClient(client *Client){
 		if c.userData.UserId.String()==client.userData.UserId.String(){
 			g.Clients = append(g.Clients[:i], g.Clients[i+1:]...)
 		}
+	}
+}
+
+func (g *Game) writeMessages(){
+	// defer func(){
+	// 	c.manager.RemoveClient(c)
+	// }()
+
+	for{
+		select{
+		case message, _ := <- g.GameStateOut:
+			g.BroadcastMessage(SocketMessage.WebSocketMessage{
+				Type: "GAME_STATE",
+				Content: map[string]string{
+					"ball": fmt.Sprintf("%v", message.Ball),
+				},
+			})
+		}	
 	}
 }
 

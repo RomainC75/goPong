@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
+	GameCore "github.com/saegus/test-technique-romain-chenard/internal/modules/game/core"
 	SocketMessage "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/requests"
 )
 
@@ -123,7 +124,13 @@ func (c *Client) readMessages(){
 		case "SELECT_GAME":
 			gameId, _ := uuid.Parse(message.Content["gameId"])
 			c.manager.AddClientToGame(gameId, c)
+		case "GAME_COMMAND":
+			c.Game.CommandIn <- GameCore.CommandMessage{
+				PlayerNumber: 0,
+				Command: message.Content["command"],
+			}
 		}
+
 	}
 }
 

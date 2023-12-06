@@ -1,25 +1,13 @@
 package game
 
 import (
-	"errors"
 	"fmt"
-	"log"
 	"time"
-
-	"github.com/gorilla/websocket"
-
-	SocketMessage "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/requests"
 )
 
-type GameList map[*Game]bool
-
-type Command struct{
-	p1 string
-	p2 string
-}
-
-
-type Game struct {
+type GameCore struct {
+	CommandIn chan CommandMessage
+	GameStateOut chan GameStateMessage
 	Ball Ball
 }
 
@@ -29,31 +17,60 @@ type Ball struct {
 }
 
 type Position struct{
-	x float64
-	y float64
+	X float64
+	Y float64
 }
 
+type CommandMessage struct{
+	PlayerNumber int
+	Command string
+}
 
+type GameStateMessage struct{
+	Ball Ball
+}
 
-func GameCore(conn *websocket.Conn){
+func NewGameState(commandIn chan CommandMessage, gameStateOut chan GameStateMessage) *GameCore{
 
+	gc := GameCore{
+		CommandIn: commandIn,
+		GameStateOut: gameStateOut,
+	}
+	gc.LaunchGameCore()
+	return &gc
+}
+
+func (gc *GameCore)LaunchGameCore(){
+	ball := Ball{}
+	fmt.Printf("GAME CORE CREATION")
 	go func (){
 		for{
-			// commands := <- commandIn
-			// fmt.Printf("command", commands)
-
-			var message SocketMessage.Message
-			err := conn.ReadJSON(&message)
-			if !errors.Is(err, nil) {
-				log.Printf("error occurred: %v", err)
-				break
+			fmt.Printf("GAME CORE LOOP")
+			select{
+				
+			case message, _ := <- gc.CommandIn:
+				ball.Position.X += 1
+				fmt.Println("message received : ", message, ball.Position.X)
+				gc.GameStateOut <- GameStateMessage{
+					Ball: ball,
+				}	
+			default:
+				
 			}
 
-			fmt.Println("MESSAGEZ : ", message.Message)
+			time.Sleep(time.Millisecond * 1000)
 
-			conn.WriteMessage(websocket.TextMessage, []byte(message.Message))
-			time.Sleep(time.Millisecond * 500)
+			// var message SocketMessage.Message
+			// err := conn.ReadJSON(&message)
+			// if !errors.Is(err, nil) {
+			// 	log.Printf("error occurred: %v", err)
+			// 	break
+			// }
+
+			// fmt.Println("MESSAGEZ : ", message.Message)
+
+			// conn.WriteMessage(websocket.TextMessage, []byte(message.Message))
 		}
-		defer conn.Close()
+		// defer conn.Close()
 	}()
 }

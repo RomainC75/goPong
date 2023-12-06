@@ -13,6 +13,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/gorilla/websocket"
+	GameCore "github.com/saegus/test-technique-romain-chenard/internal/modules/game/core"
 	SocketMessage "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/requests"
 	configu "github.com/saegus/test-technique-romain-chenard/pkg/configu"
 )
@@ -222,6 +223,7 @@ func (m *Manager) AddClientToGame(gameId uuid.UUID,c *Client)error{
 			if len(game.Clients)==game.MaxPlayerNumber{
 				game.Full=true
 				fmt.Printf("====================> LAUNCH GAME !! ")
+				game.GameCore = GameCore.NewGameState(game.CommandIn, game.GameStateOut)
 			}
 			
 			return nil
