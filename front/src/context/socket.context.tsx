@@ -142,7 +142,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
           console.log("=> NOTIFICATION : ", message.content)
           setAvailableRoomList(JSON.parse(message.content.rooms))
           setAvailableGameList(JSON.parse(message.content.games))
-        // case EWsMessageTypeIn.
+          break
       }
     }
   }, [lastMessage])
