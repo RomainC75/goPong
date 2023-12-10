@@ -7,8 +7,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
-	GameCore "github.com/saegus/test-technique-romain-chenard/internal/modules/game/core"
-	SocketMessage "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/requests"
+	SocketMessage "github.com/saegus/test-technique-romain-chenard/api/dto/requests"
+	GameCore "github.com/saegus/test-technique-romain-chenard/pkg/game/core"
 )
 
 type ClientList map[*Client]bool

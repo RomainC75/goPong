@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/gorilla/websocket"
-	SocketMessage "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/requests"
+	SocketMessage "github.com/saegus/test-technique-romain-chenard/api/dto/requests"
 )
 
 type Hub struct {

@@ -3,7 +3,7 @@ package routes
 import (
 	// middlewares "github.com/saegus/test-technique-romain-chenard/internal/middleware"
 
-	userCtrl "github.com/saegus/test-technique-romain-chenard/api/controllers"
+	Controllers "github.com/saegus/test-technique-romain-chenard/api/controllers"
 	"github.com/saegus/test-technique-romain-chenard/api/middlewares"
 
 	"github.com/gin-gonic/gin"
@@ -11,7 +11,7 @@ import (
 
 func UserRoutes(router *gin.Engine) {
 
-	userController := userCtrl.New()
+	userController := Controllers.NewAuthCtrl()
 	guestGroup := router.Group("/auth")
 	{
 		guestGroup.POST("/signup", userController.HandleSignup)

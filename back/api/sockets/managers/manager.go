@@ -13,9 +13,9 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/gorilla/websocket"
-	GameCore "github.com/saegus/test-technique-romain-chenard/internal/modules/game/core"
-	SocketMessage "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/requests"
-	configu "github.com/saegus/test-technique-romain-chenard/pkg/configu"
+	SocketMessage "github.com/saegus/test-technique-romain-chenard/api/dto/requests"
+	config "github.com/saegus/test-technique-romain-chenard/config"
+	GameCore "github.com/saegus/test-technique-romain-chenard/pkg/game/core"
 )
 
 type ManagerInterface interface{
@@ -43,7 +43,7 @@ var(
 		WriteBufferSize: 1024,
 		CheckOrigin: func(r *http.Request) bool {
 			origin := r.Header.Get("Origin")
-			cfg := configu.Get()
+			cfg := config.Get()
 			frontUrl := cfg.Front.Host
 			return origin == frontUrl
 		},

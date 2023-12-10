@@ -15,7 +15,7 @@ type ListController struct {
 	taskService Services.TaskServiceInterface
 }
 
-func NewList() *ListController {
+func NewListCtrl() *ListController {
 	return &ListController{
 		listService: Services.NewListSrv(),
 		taskService: Services.NewTaskSrv(),

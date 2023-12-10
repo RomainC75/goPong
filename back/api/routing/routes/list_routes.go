@@ -3,7 +3,7 @@ package routes
 import (
 	// middlewares "github.com/saegus/test-technique-romain-chenard/internal/middleware"
 
-	listCtrl "github.com/saegus/test-technique-romain-chenard/api/controllers"
+	Controllers "github.com/saegus/test-technique-romain-chenard/api/controllers"
 	"github.com/saegus/test-technique-romain-chenard/api/middlewares"
 
 	"github.com/gin-gonic/gin"
@@ -11,7 +11,7 @@ import (
 
 func ListRoutes(router *gin.Engine) {
 
-	listController := listCtrl.New()
+	listController := Controllers.NewListCtrl()
 	guestGroup := router.Group("/todo/list")
 	{
 		guestGroup.POST("", middlewares.IsAuth(false), listController.CreateList)

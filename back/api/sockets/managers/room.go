@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	SocketMessage "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/requests"
+	SocketMessage "github.com/saegus/test-technique-romain-chenard/api/dto/requests"
 )
 
 
