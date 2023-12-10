@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/saegus/test-technique-romain-chenard/pkg/configu"
+	"github.com/saegus/test-technique-romain-chenard/config"
 )
 
 func Serve() {
-	configs := configu.Get()
+	configs := config.Get()
 
 	r := GetRouter()
 

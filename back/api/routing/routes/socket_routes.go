@@ -2,11 +2,11 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/saegus/test-technique-romain-chenard/internal/middlewares"
-	socketCtrl "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/controllers"
+	socketCtrl "github.com/saegus/test-technique-romain-chenard/api/controllers"
+	"github.com/saegus/test-technique-romain-chenard/api/middlewares"
 )
 
-func Routes(router *gin.Engine) {
+func SocketRoutes(router *gin.Engine) {
 
 	socketController := socketCtrl.New()
 	// guestGroup := router.Group("/ws")

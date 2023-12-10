@@ -3,8 +3,8 @@ package repositories
 import (
 	"errors"
 
-	models "github.com/saegus/test-technique-romain-chenard/internal/modules/user/models"
-	database "github.com/saegus/test-technique-romain-chenard/pkg/database"
+	database "github.com/saegus/test-technique-romain-chenard/data/database"
+	models "github.com/saegus/test-technique-romain-chenard/data/models"
 	"gorm.io/gorm"
 )
 
@@ -12,7 +12,7 @@ type UserRepository struct {
 	DB *gorm.DB
 }
 
-func New() *UserRepository{
+func NewUserRepo() *UserRepository{
 	return  &UserRepository{
 		DB: database.Connection(),
 	}

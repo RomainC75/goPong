@@ -3,13 +3,13 @@ package routes
 import (
 	// middlewares "github.com/saegus/test-technique-romain-chenard/internal/middleware"
 
-	"github.com/saegus/test-technique-romain-chenard/internal/middlewares"
-	taskCtrl "github.com/saegus/test-technique-romain-chenard/internal/modules/task/controllers"
+	taskCtrl "github.com/saegus/test-technique-romain-chenard/api/controllers"
+	"github.com/saegus/test-technique-romain-chenard/api/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Routes(router *gin.Engine) {
+func TaskRoutes(router *gin.Engine) {
 
 	taskController := taskCtrl.New()
 	guestGroup := router.Group("/todo/task")

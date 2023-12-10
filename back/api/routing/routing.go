@@ -1,7 +1,7 @@
 package routing
 
 import (
-	"github.com/saegus/test-technique-romain-chenard/internal/providers/routes"
+	"github.com/saegus/test-technique-romain-chenard/api/routing/routes"
 
 	"github.com/gin-gonic/gin"
 )

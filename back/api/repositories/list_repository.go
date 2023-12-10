@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	models "github.com/saegus/test-technique-romain-chenard/internal/modules/list/models"
-	database "github.com/saegus/test-technique-romain-chenard/pkg/database"
+	database "github.com/saegus/test-technique-romain-chenard/data/database"
+	models "github.com/saegus/test-technique-romain-chenard/data/models"
 	"gorm.io/gorm"
 )
 
@@ -13,7 +13,7 @@ type ListRepository struct {
 	DB *gorm.DB
 }
 
-func New() *ListRepository{
+func NewListRepo() *ListRepository{
 	return  &ListRepository{
 		DB: database.Connection(),
 	}

@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	models "github.com/saegus/test-technique-romain-chenard/internal/modules/user/models"
+	models "github.com/saegus/test-technique-romain-chenard/data/models"
 )
 
 type UserRepositoryInterface interface {

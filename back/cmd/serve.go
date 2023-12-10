@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/saegus/test-technique-romain-chenard/pkg/bootstrap"
+	"github.com/saegus/test-technique-romain-chenard/api/bootstrap"
 
 	"github.com/spf13/cobra"
 )

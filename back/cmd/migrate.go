@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/saegus/test-technique-romain-chenard/pkg/bootstrap"
-	"github.com/saegus/test-technique-romain-chenard/pkg/configu"
+	"github.com/saegus/test-technique-romain-chenard/api/bootstrap"
+	"github.com/saegus/test-technique-romain-chenard/config"
 
 	"github.com/spf13/cobra"
 )
@@ -21,6 +21,6 @@ var migrateCmd = &cobra.Command{
 }
 
 func migrate() {
-	configu.Set()
+	config.Set()
 	bootstrap.Migrate()
 }

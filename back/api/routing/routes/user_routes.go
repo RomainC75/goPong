@@ -3,13 +3,13 @@ package routes
 import (
 	// middlewares "github.com/saegus/test-technique-romain-chenard/internal/middleware"
 
-	"github.com/saegus/test-technique-romain-chenard/internal/middlewares"
-	userCtrl "github.com/saegus/test-technique-romain-chenard/internal/modules/user/controllers"
+	userCtrl "github.com/saegus/test-technique-romain-chenard/api/controllers"
+	"github.com/saegus/test-technique-romain-chenard/api/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Routes(router *gin.Engine) {
+func UserRoutes(router *gin.Engine) {
 
 	userController := userCtrl.New()
 	guestGroup := router.Group("/auth")

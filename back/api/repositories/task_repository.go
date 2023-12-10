@@ -3,8 +3,8 @@ package repositories
 import (
 	"errors"
 
-	models "github.com/saegus/test-technique-romain-chenard/internal/modules/task/models"
-	database "github.com/saegus/test-technique-romain-chenard/pkg/database"
+	database "github.com/saegus/test-technique-romain-chenard/data/database"
+	models "github.com/saegus/test-technique-romain-chenard/data/models"
 	"gorm.io/gorm"
 )
 
@@ -12,7 +12,7 @@ type TaskRepository struct {
 	DB *gorm.DB
 }
 
-func New() *TaskRepository{
+func newTaskRepo() *TaskRepository{
 	return  &TaskRepository{
 		DB: database.Connection(),
 	}
