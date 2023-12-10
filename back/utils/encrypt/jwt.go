@@ -6,8 +6,8 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
-	UserModel "github.com/saegus/test-technique-romain-chenard/internal/modules/user/models"
-	"github.com/saegus/test-technique-romain-chenard/pkg/configu"
+	"github.com/saegus/test-technique-romain-chenard/config"
+	UserModel "github.com/saegus/test-technique-romain-chenard/data/models"
 )
 
 type Claims struct {
@@ -17,7 +17,7 @@ type Claims struct {
 }
 
 func Generate(user UserModel.User) (string, error) {
-	secret := configu.Get().Jwt.Secret
+	secret := config.Get().Jwt.Secret
 
 	token := jwt.New(jwt.GetSigningMethod("HS256"))
 	exp := time.Now().Add(time.Hour * 24)
@@ -39,7 +39,7 @@ func Generate(user UserModel.User) (string, error) {
 }
 
 func GetClaimsFromToken(tokenString string) (jwt.MapClaims, error) {
-	secret := configu.Get().Jwt.Secret
+	secret := config.Get().Jwt.Secret
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])

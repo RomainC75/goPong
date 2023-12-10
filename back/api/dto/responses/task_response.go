@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/uuid"
 
-	TaskModel "github.com/saegus/test-technique-romain-chenard/internal/modules/task/models"
+	TaskModel "github.com/saegus/test-technique-romain-chenard/data/models"
 )
 
 

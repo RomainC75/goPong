@@ -1,17 +1,16 @@
 package services
 
 import (
-	"github.com/saegus/test-technique-romain-chenard/internal/modules/task/models"
-	TaskModel "github.com/saegus/test-technique-romain-chenard/internal/modules/task/models"
-	TaskRequest "github.com/saegus/test-technique-romain-chenard/internal/modules/task/requests"
+	Requests "github.com/saegus/test-technique-romain-chenard/api/dto/requests"
+	Models "github.com/saegus/test-technique-romain-chenard/data/models"
 )
 
 type TaskServiceInterface interface {
-	CreateTask (task TaskRequest.CreateTaskRequest, listId string) (TaskModel.Task, error)
-	GetTasks (userId string) []TaskModel.Task
-	GetTask (taskId string) (models.Task, error)
-	ToggleTaskIsDone (taskId string) (models.Task, error)
-	UpdateTask(task models.Task) (models.Task, error)
-	Delete(taskId string) (models.Task, error)
-	DeleteTasksListId (listId string) ([]models.Task, error)
+	CreateTask (task Requests.CreateTaskRequest, listId string) (Models.Task, error)
+	GetTasks (userId string) []Models.Task
+	GetTask (taskId string) (Models.Task, error)
+	ToggleTaskIsDone (taskId string) (Models.Task, error)
+	UpdateTask(task Models.Task) (Models.Task, error)
+	Delete(taskId string) (Models.Task, error)
+	DeleteTasksListId (listId string) ([]Models.Task, error)
 }

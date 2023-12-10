@@ -1,10 +1,10 @@
-package response
+package responses
 
 import (
 	"time"
 
 	"github.com/google/uuid"
-	ListModel "github.com/saegus/test-technique-romain-chenard/internal/modules/list/models"
+	ListModel "github.com/saegus/test-technique-romain-chenard/data/models"
 )
 
 type ListResponse struct {

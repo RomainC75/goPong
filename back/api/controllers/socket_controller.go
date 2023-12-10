@@ -3,22 +3,21 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	ListService "github.com/saegus/test-technique-romain-chenard/internal/modules/list/services"
-	TaskService "github.com/saegus/test-technique-romain-chenard/internal/modules/task/services"
+	Services "github.com/saegus/test-technique-romain-chenard/api/services"
 
-	Manager "github.com/saegus/test-technique-romain-chenard/internal/modules/socket/managers"
+	Manager "github.com/saegus/test-technique-romain-chenard/api/sockets/managers"
 )
 
 type Controller struct {
-	taskService TaskService.TaskServiceInterface
-	listService ListService.ListServiceInterface
+	taskService Services.TaskServiceInterface
+	listService Services.ListServiceInterface
 	manager Manager.ManagerInterface
 }
 
 func New() *Controller {
 	return &Controller{
-		taskService: TaskService.New(),
-		listService: ListService.New(),
+		taskService: Services.NewTaskSrv(),
+		listService: Services.NewListSrv(),
 		manager: Manager.New(),
 	}
 }
@@ -57,7 +56,7 @@ func (controller *Controller) Socket(c *gin.Context) {
 	// if err != nil {
 	// 	log.Printf("=======> socket server configuration error: %v\n", err)
 	//  	return
-	// }
+	// }ListService{}
 	// defer conn.Close()
 
 	// for {

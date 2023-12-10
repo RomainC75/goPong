@@ -2,7 +2,7 @@ package responses
 
 import (
 	"github.com/google/uuid"
-	UserModel "github.com/saegus/test-technique-romain-chenard/internal/modules/user/models"
+	UserModel "github.com/saegus/test-technique-romain-chenard/data/models"
 )
 
 type User struct {

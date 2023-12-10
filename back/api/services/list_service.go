@@ -2,22 +2,22 @@ package services
 
 import (
 	"github.com/google/uuid"
-	ListModel "github.com/saegus/test-technique-romain-chenard/internal/modules/list/models"
-	ListRepository "github.com/saegus/test-technique-romain-chenard/internal/modules/list/repositories"
-	ListRequest "github.com/saegus/test-technique-romain-chenard/internal/modules/list/requests"
+	ListRequests "github.com/saegus/test-technique-romain-chenard/api/dto/requests"
+	ListRepository "github.com/saegus/test-technique-romain-chenard/api/repositories"
+	ListModel "github.com/saegus/test-technique-romain-chenard/data/models"
 )
 
 type ListService struct {
 	listRepository ListRepository.ListRepositoryInterface
 }
 
-func New() *ListService{
+func NewListSrv() *ListService{
 	return &ListService{
-		listRepository: ListRepository.New(),
+		listRepository: ListRepository.NewListRepo(),
 	}
 }
 
-func (listService *ListService) CreateList (list ListRequest.CreateListRequest, userId string) (ListModel.List, error){
+func (listService *ListService) CreateList (list ListRequests.CreateListRequest, userId string) (ListModel.List, error){
 	var newList ListModel.List
 	userUuid, _ := uuid.Parse(userId)
 	newList.Name = list.Name

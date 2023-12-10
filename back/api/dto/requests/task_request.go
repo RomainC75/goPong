@@ -8,4 +8,3 @@ type CreateTaskRequest struct {
 	DeadLine time.Time `json:"deadLine" binding:"required"`
 }
 
-

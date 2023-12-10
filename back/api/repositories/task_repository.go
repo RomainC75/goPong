@@ -12,7 +12,7 @@ type TaskRepository struct {
 	DB *gorm.DB
 }
 
-func newTaskRepo() *TaskRepository{
+func NewTaskRepo() *TaskRepository{
 	return  &TaskRepository{
 		DB: database.Connection(),
 	}

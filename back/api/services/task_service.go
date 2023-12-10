@@ -2,24 +2,24 @@ package services
 
 import (
 	"github.com/google/uuid"
-	"github.com/saegus/test-technique-romain-chenard/internal/modules/task/models"
-	TaskModel "github.com/saegus/test-technique-romain-chenard/internal/modules/task/models"
-	TaskRepository "github.com/saegus/test-technique-romain-chenard/internal/modules/task/repositories"
-	TaskRequest "github.com/saegus/test-technique-romain-chenard/internal/modules/task/requests"
+
+	TaskRequest "github.com/saegus/test-technique-romain-chenard/api/dto/requests"
+	TaskRepository "github.com/saegus/test-technique-romain-chenard/api/repositories"
+	Models "github.com/saegus/test-technique-romain-chenard/data/models"
 )
 
 type TaskService struct {
 	taskRepository TaskRepository.TaskRepositoryInterface
 }
 
-func New() *TaskService{
+func NewTaskSrv() *TaskService{
 	return &TaskService{
-		taskRepository: TaskRepository.New(),
+		taskRepository: TaskRepository.NewTaskRepo(),
 	}
 }
 
-func (taskService *TaskService) CreateTask (task TaskRequest.CreateTaskRequest, listId string) (TaskModel.Task, error){
-	var newTask TaskModel.Task
+func (taskService *TaskService) CreateTask (task TaskRequest.CreateTaskRequest, listId string) (Models.Task, error){
+	var newTask Models.Task
 	listUuid := uuid.MustParse(listId)
 
 	newTask.Name = task.Name
@@ -31,33 +31,33 @@ func (taskService *TaskService) CreateTask (task TaskRequest.CreateTaskRequest, 
 	newTask, err := taskService.taskRepository.CreateTask(newTask)
 
 	if err != nil{
-		return TaskModel.Task{}, err
+		return Models.Task{}, err
 	}
 	return newTask, nil
 }
 
 
-func (taskService *TaskService) GetTasks (listId string) []models.Task{
+func (taskService *TaskService) GetTasks (listId string) []Models.Task{
 	return taskService.taskRepository.GetTasks(listId)
 }
 
-func (taskService *TaskService) GetTask (taskId string) (models.Task, error){
+func (taskService *TaskService) GetTask (taskId string) (Models.Task, error){
 	return taskService.taskRepository.GetTaskById(taskId)
 }
 
-func (taskService *TaskService) ToggleTaskIsDone (taskId string) (models.Task, error){
+func (taskService *TaskService) ToggleTaskIsDone (taskId string) (Models.Task, error){
 	return taskService.taskRepository.ToggleTaskIsDoneById(taskId)
 }
 
-func (TaskService *TaskService) UpdateTask(task models.Task) (models.Task, error){
+func (TaskService *TaskService) UpdateTask(task Models.Task) (Models.Task, error){
 	return TaskService.taskRepository.UpdateTask(task)
 }
 
-func (TaskService *TaskService) Delete(taskId string) (models.Task, error){
+func (TaskService *TaskService) Delete(taskId string) (Models.Task, error){
 	return TaskService.taskRepository.DeleteTaskById(taskId)
 }
 
-func (TaskService *TaskService) DeleteTasksListId (listId string) ([]models.Task, error){
+func (TaskService *TaskService) DeleteTasksListId (listId string) ([]Models.Task, error){
 	return TaskService.taskRepository.DeleteTasksByListId(listId)
 }
 

@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/saegus/test-technique-romain-chenard/pkg/encrypt"
+	encrypt "github.com/saegus/test-technique-romain-chenard/utils/encrypt"
 )
 
 func IsAuth(isSocket bool) gin.HandlerFunc {

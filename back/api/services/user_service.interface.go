@@ -1,9 +1,9 @@
 package services
 
 import (
-	UserModel "github.com/saegus/test-technique-romain-chenard/internal/modules/user/models"
-	UserRequest "github.com/saegus/test-technique-romain-chenard/internal/modules/user/requests"
-	UserResponse "github.com/saegus/test-technique-romain-chenard/internal/modules/user/responses"
+	UserRequest "github.com/saegus/test-technique-romain-chenard/api/dto/requests"
+	UserResponse "github.com/saegus/test-technique-romain-chenard/api/dto/responses"
+	UserModel "github.com/saegus/test-technique-romain-chenard/data/models"
 )
 
 type UserServiceInterface interface {

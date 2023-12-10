@@ -4,26 +4,25 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/saegus/test-technique-romain-chenard/internal/modules/list/models"
-	ListRequest "github.com/saegus/test-technique-romain-chenard/internal/modules/list/requests"
-	ListResponse "github.com/saegus/test-technique-romain-chenard/internal/modules/list/responses"
-	ListService "github.com/saegus/test-technique-romain-chenard/internal/modules/list/services"
-	TaskService "github.com/saegus/test-technique-romain-chenard/internal/modules/task/services"
+	ListRequest "github.com/saegus/test-technique-romain-chenard/api/dto/requests"
+	ListResponse "github.com/saegus/test-technique-romain-chenard/api/dto/responses"
+	Services "github.com/saegus/test-technique-romain-chenard/api/services"
+	"github.com/saegus/test-technique-romain-chenard/data/models"
 )
 
-type Controller struct {
-	listService ListService.ListServiceInterface
-	taskService TaskService.TaskServiceInterface
+type ListController struct {
+	listService Services.ListServiceInterface
+	taskService Services.TaskServiceInterface
 }
 
-func New() *Controller {
-	return &Controller{
-		listService: ListService.New(),
-		taskService: TaskService.New(),
+func NewList() *ListController {
+	return &ListController{
+		listService: Services.NewListSrv(),
+		taskService: Services.NewTaskSrv(),
 	}
 }
 
-func (controller *Controller) CreateList(c *gin.Context) {
+func (controller *ListController) CreateList(c *gin.Context) {
 	userId, _ := c.Get("user_id")
 	userIdStr, _ := userId.(string)
 
@@ -41,7 +40,7 @@ func (controller *Controller) CreateList(c *gin.Context) {
 	c.JSON(http.StatusOK, recordedList)
 }
 
-func (controller *Controller) GetLists(c *gin.Context) {
+func (controller *ListController) GetLists(c *gin.Context) {
 	userId, _ := c.Get("user_id")
 	userIdStr, _ := userId.(string)
 	
@@ -53,7 +52,7 @@ func (controller *Controller) GetLists(c *gin.Context) {
 	c.JSON(http.StatusOK, ListResponse.ToListArrayResponse(lists))
 }
 
-func (controller *Controller) DeleteList(c *gin.Context) {
+func (controller *ListController) DeleteList(c *gin.Context) {
 	userId, _ := c.Get("user_id")
 	userIdStr, _ := userId.(string)
 	listId := c.Param("listId")
@@ -78,7 +77,7 @@ func (controller *Controller) DeleteList(c *gin.Context) {
 	c.JSON(http.StatusOK, ListResponse.ToListResponse(deletedList))
 }
 
-func (controller *Controller) UpdateList(c *gin.Context) {
+func (controller *ListController) UpdateList(c *gin.Context) {
 	userId, _ := c.Get("user_id")
 	userIdStr, _ := userId.(string)
 

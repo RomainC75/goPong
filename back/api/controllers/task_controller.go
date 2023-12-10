@@ -4,26 +4,25 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	ListService "github.com/saegus/test-technique-romain-chenard/internal/modules/list/services"
-	"github.com/saegus/test-technique-romain-chenard/internal/modules/task/models"
-	TaskRequest "github.com/saegus/test-technique-romain-chenard/internal/modules/task/requests"
-	TaskResponse "github.com/saegus/test-technique-romain-chenard/internal/modules/task/responses"
-	TaskService "github.com/saegus/test-technique-romain-chenard/internal/modules/task/services"
+	TaskRequest "github.com/saegus/test-technique-romain-chenard/api/dto/requests"
+	TaskResponse "github.com/saegus/test-technique-romain-chenard/api/dto/responses"
+	Services "github.com/saegus/test-technique-romain-chenard/api/services"
+	"github.com/saegus/test-technique-romain-chenard/data/models"
 )
 
-type Controller struct {
-	taskService TaskService.TaskServiceInterface
-	listService ListService.ListServiceInterface
+type TaskController struct {
+	taskService Services.TaskServiceInterface
+	listService Services.ListServiceInterface
 }
 
-func New() *Controller {
-	return &Controller{
-		taskService: TaskService.New(),
-		listService: ListService.New(),
+func NewTaskCtrl() *TaskController {
+	return &TaskController{
+		taskService: Services.NewTaskSrv(),
+		listService: Services.NewListSrv(),
 	}
 }
 
-func (controller *Controller) CreateTask(c *gin.Context) {
+func (controller *TaskController) CreateTask(c *gin.Context) {
 	userId, _ := c.Get("user_id")
 	userIdStr, _ := userId.(string)
 
@@ -59,7 +58,7 @@ func (controller *Controller) CreateTask(c *gin.Context) {
 	c.JSON(http.StatusOK, recordedList)
 }
 
-func (controller *Controller) GetTasks(c *gin.Context) {
+func (controller *TaskController) GetTasks(c *gin.Context) {
 	userId, _ := c.Get("user_id")
 	userIdStr, _ := userId.(string)
 
@@ -85,7 +84,7 @@ func (controller *Controller) GetTasks(c *gin.Context) {
 	c.JSON(http.StatusOK, TaskResponse.ToTaskArrayResponse(controller.taskService.GetTasks(listId)))
 }
 
-func (controller *Controller) ToogleTask(c *gin.Context) {
+func (controller *TaskController) ToogleTask(c *gin.Context) {
 	userId, _ := c.Get("user_id")
 	userIdStr, _ := userId.(string)
 
@@ -123,7 +122,7 @@ func (controller *Controller) ToogleTask(c *gin.Context) {
 	c.JSON(http.StatusOK, newTask)
 }
 
-func (controller *Controller) UpdateTask(c *gin.Context) {
+func (controller *TaskController) UpdateTask(c *gin.Context) {
 	userId, _ := c.Get("user_id")
 	userIdStr, _ := userId.(string)
 
@@ -158,7 +157,7 @@ func (controller *Controller) UpdateTask(c *gin.Context) {
 	c.JSON(http.StatusOK, TaskResponse.ToTaskResponse(updatedTask))
 }
 
-func (controller *Controller) DeleteTask(c *gin.Context) {
+func (controller *TaskController) DeleteTask(c *gin.Context) {
 	taskId := c.Param("taskId")
 
 	deletedTask, err := controller.taskService.Delete(taskId)

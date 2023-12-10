@@ -1,8 +1,8 @@
 package services
 
 import (
-	ListModel "github.com/saegus/test-technique-romain-chenard/internal/modules/list/models"
-	ListRequest "github.com/saegus/test-technique-romain-chenard/internal/modules/list/requests"
+	ListRequest "github.com/saegus/test-technique-romain-chenard/api/dto/requests"
+	ListModel "github.com/saegus/test-technique-romain-chenard/data/models"
 )
 
 type ListServiceInterface interface {
