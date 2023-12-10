@@ -7,13 +7,8 @@ import (
 
 type GameCore struct {
 	CommandIn chan CommandMessage
-	GameStateOut chan GameStateMessage
-	Ball Ball
-}
-
-type Ball struct {
-	Position Position
-	Direction float64
+	GameStateOut chan GameStateInfos
+	GameStateInfos GameStateInfos
 }
 
 type Position struct{
@@ -26,37 +21,59 @@ type CommandMessage struct{
 	Command string
 }
 
-type GameStateMessage struct{
-	Ball Ball
+type Player struct {
+	Score int
+	Positions []Position
 }
 
-func NewGameState(commandIn chan CommandMessage, gameStateOut chan GameStateMessage) *GameCore{
+type GameStateInfos struct{
+	Bait Position
+	Players []Player
+}
 
+func NewPlayer(number int) Player{
+	position := Position{0,1}
+	if number > 0 {
+		position.Y=-1
+	}
+	return Player{
+		Score: 0,
+		Positions: []Position{
+			Position{0,1},
+		},
+	}
+}
+
+func NewGameState(commandIn chan CommandMessage, gameStateOut chan GameStateInfos) *GameCore{
 	gc := GameCore{
 		CommandIn: commandIn,
 		GameStateOut: gameStateOut,
+		GameStateInfos: GameStateInfos{
+			Bait: Position{0,1},
+			Players: []Player{
+				NewPlayer(0), 
+				NewPlayer(1),
+			},
+		},
 	}
 	gc.LaunchGameCore()
 	return &gc
 }
 
 func (gc *GameCore)LaunchGameCore(){
-	ball := Ball{}
 	fmt.Printf("GAME CORE CREATION")
 	go func (){
 		for{
-			fmt.Printf("GAME CORE LOOP")
+			fmt.Println("GAME CORE LOOP")
 			select{
-				
-			case message, _ := <- gc.CommandIn:
-				ball.Position.X += 1
-				fmt.Println("message received : ", message, ball.Position.X)
-				gc.GameStateOut <- GameStateMessage{
-					Ball: ball,
-				}	
+			case messageIn, _ := <- gc.CommandIn:
+				fmt.Println("messageIn : ", messageIn, gc.GameStateInfos.Bait.X)
 			default:
-				
 			}
+
+			gc.GameStateInfos.Bait.X += 1
+			// fmt.Println("message received : ", message, ball.Position.Bait.X)
+			gc.GameStateOut <- gc.GameStateInfos
 
 			time.Sleep(time.Millisecond * 1000)
 

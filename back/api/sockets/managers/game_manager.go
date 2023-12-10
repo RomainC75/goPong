@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	SocketMessage "github.com/saegus/test-technique-romain-chenard/api/dto/requests"
 	GameCore "github.com/saegus/test-technique-romain-chenard/pkg/game/core"
+	"github.com/saegus/test-technique-romain-chenard/utils"
 )
 
 type GameList map[*Game]bool
@@ -29,7 +30,7 @@ type Game struct{
 	MaxPlayerNumber int
 	Full bool
 	CommandIn chan GameCore.CommandMessage
-	GameStateOut chan GameCore.GameStateMessage
+	GameStateOut chan GameCore.GameStateInfos
 }
 
 func NewGame(manager *Manager, c *Client, name string )*Game{
@@ -42,7 +43,7 @@ func NewGame(manager *Manager, c *Client, name string )*Game{
 		Clients: newClientList,
 		MaxPlayerNumber: 2,
 		CommandIn: make(chan GameCore.CommandMessage, 1000),
-		GameStateOut: make(chan GameCore.GameStateMessage, 1000),
+		GameStateOut: make(chan GameCore.GameStateInfos, 1000),
 	}
 	go g.writeMessages()
 	return g
@@ -92,10 +93,16 @@ func (g *Game) writeMessages(){
 	for{
 		select{
 		case message, _ := <- g.GameStateOut:
+			utils.PrettyDisplay(message)
+
+			// JSON !!!
+		
+
 			g.BroadcastMessage(SocketMessage.WebSocketMessage{
 				Type: "GAME_STATE",
 				Content: map[string]string{
-					"ball": fmt.Sprintf("%v", message.Ball),
+					"bait": fmt.Sprintf("%v", message.Bait),
+					"players": fmt.Sprintf("%v", message.Players),
 				},
 			})
 		}	
