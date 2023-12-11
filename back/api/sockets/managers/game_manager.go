@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	SocketMessage "github.com/saegus/test-technique-romain-chenard/api/dto/requests"
 	GameCore "github.com/saegus/test-technique-romain-chenard/pkg/game/core"
+	"github.com/saegus/test-technique-romain-chenard/utils"
 )
 
 type GameList map[*Game]bool
@@ -92,7 +93,8 @@ func (g *Game) writeMessages(){
 	for{
 		select{
 		case message, _ := <- g.GameStateOut:
-
+			fmt.Println("=====> MESSSAGE : ")
+			utils.PrettyDisplay(message)
 			slcState, _ := json.Marshal(message)
 
 			g.BroadcastMessage(SocketMessage.WebSocketMessage{

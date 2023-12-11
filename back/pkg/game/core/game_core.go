@@ -9,12 +9,11 @@ type GameCore struct {
 	CommandIn chan CommandMessage
 	GameStateOut chan GameStateInfos
 	GameStateInfos GameStateInfos
-	GameConfig GameConfig
 }
 
 type GameConfig struct{
-	size uint
-	speedMs uint 
+	Size uint `json:"size"`
+	SpeedMs uint `json:"speed_ms"`
 }
 
 type Position struct{
@@ -36,6 +35,7 @@ type GameStateInfos struct{
 	Bait Position `json:"bait"`
 	Players []Player `json:"players"`
 	Level uint `json:"level"`
+	GameConfig GameConfig `json:"game_config"`
 }
 
 func NewPlayer(number int) Player{
@@ -62,11 +62,12 @@ func NewGameState(commandIn chan CommandMessage, gameStateOut chan GameStateInfo
 				NewPlayer(0), 
 				NewPlayer(1),
 			},
+			GameConfig: GameConfig{
+				Size: 30,
+				SpeedMs: 1000,
+			},
 		},
-		GameConfig: GameConfig{
-			size: 30,
-			speedMs: 1000,
-		},
+		
 	}
 	gc.LaunchGameCore()
 	return &gc
@@ -82,12 +83,11 @@ func (gc *GameCore)LaunchGameCore(){
 				fmt.Println("messageIn : ", messageIn, gc.GameStateInfos.Bait.X)
 			default:
 			}
-
+			fmt.Println("============================", gc.GameStateInfos)
 			gc.GameStateInfos.Bait.X += 1
-			// fmt.Println("message received : ", message, ball.Position.Bait.X)
 			gc.GameStateOut <- gc.GameStateInfos
 
-			time.Sleep(time.Millisecond * time.Duration(gc.GameConfig.speedMs))
+			time.Sleep(time.Millisecond * time.Duration(gc.GameStateInfos.GameConfig.SpeedMs))
 
 			// var message SocketMessage.Message
 			// err := conn.ReadJSON(&message)
