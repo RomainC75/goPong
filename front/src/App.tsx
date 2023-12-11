@@ -10,9 +10,10 @@ import MessageBox from './components/MessageBox'
 import DisconnectFromRoom from './components/DisconnectFromRoom'
 import CreateGame from './components/CreateGame'
 import GameList from './components/GameList'
+import Game from './components/Game'
 
 function App (): JSX.Element {
-  const { broadcastMessages, room, availableRoomList } = useContext(
+  const { broadcastMessages, room, availableRoomList, currentGame } = useContext(
     SocketContext
   ) as SocketContextInterface
 
@@ -22,6 +23,7 @@ function App (): JSX.Element {
       <div>
         <CreateGame/>
         <GameList/>
+        {currentGame && <Game/>}
         <Message/>
         <MessageBox messages={broadcastMessages}/>
         {room ? <DisconnectFromRoom/> : <CreateRoom />}

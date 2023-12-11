@@ -14,6 +14,7 @@ export enum EWsMessageTypeIn {
   gameCreatedByYou = 'GAME_CREATED_BYYOU',
   gameCreated = 'GAME_CREATED',
   roomsGamesNotification = 'ROOMS_GAMES_NOTIFICATION',
+  gameState = 'GAME_STATE'
 }
 
 export enum EWsMessageTypeOut {
@@ -24,7 +25,7 @@ export enum EWsMessageTypeOut {
   sendToRoom = 'SEND_TO_ROOM',
   disconnectFromRoom = 'DISCONNECT_FROM_ROOM',
   createGame = 'CREATE_GAME',
-  selectGame = 'SELECT_GAME'
+  selectGame = 'SELECT_GAME',
 }
 
 export interface IwebSocketMessageOut {
@@ -60,4 +61,20 @@ export interface IRoom {
 export interface IGame {
   name: string
   id: string
+  playerNumber: number
+}
+
+export interface IGameState {
+  bait: IPosition
+  players: [IPlayerState, IPlayerState]
+}
+
+export interface IPlayerState {
+  score: number
+  positions: IPosition[]
+}
+
+export interface IPosition {
+  x: number
+  y: number
 }

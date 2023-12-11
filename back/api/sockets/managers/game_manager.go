@@ -7,7 +7,6 @@ import (
 	"github.com/google/uuid"
 	SocketMessage "github.com/saegus/test-technique-romain-chenard/api/dto/requests"
 	GameCore "github.com/saegus/test-technique-romain-chenard/pkg/game/core"
-	"github.com/saegus/test-technique-romain-chenard/utils"
 )
 
 type GameList map[*Game]bool
@@ -93,26 +92,16 @@ func (g *Game) writeMessages(){
 	for{
 		select{
 		case message, _ := <- g.GameStateOut:
-			utils.PrettyDisplay(message)
 
-			// JSON !!!
-		
+			slcState, _ := json.Marshal(message)
 
 			g.BroadcastMessage(SocketMessage.WebSocketMessage{
 				Type: "GAME_STATE",
 				Content: map[string]string{
-					"bait": fmt.Sprintf("%v", message.Bait),
-					"players": fmt.Sprintf("%v", message.Players),
+					"state": string(slcState),
 				},
 			})
 		}	
 	}
 }
-
-// func (gm *GameManager)CreateGame(room *Room, manager *Manager.Manager){
-
-// 	game := NewGameInstance(c)
-
-// 	gm.games[]
-// }
 

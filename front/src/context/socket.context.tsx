@@ -7,7 +7,8 @@ import {
   type IRoom,
   type IwebSocketMessageIn,
   type IwebSocketMessageOut,
-  IGame
+  IGame,
+  IGameState
 } from '../@types/socket.type'
 import useWebSocket from 'react-use-websocket'
 import { AuthContext } from './auth.context'
@@ -26,9 +27,11 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
 
   const [broadcastMessages, setBroadcastMessages] = useState<IWebSocketMessageContent[]>([])
   const [room, setRoom] = useState<IRoom | null>(null)
+  const [currentGame, setCurrentGame] = useState<IGame | null>(null)
   const [availableRoomList, setAvailableRoomList] = useState<IRoom[]>([])
   const [availableGameList, setAvailableGameList] = useState<IGame[]>([])
   const [roomMessages, setRoomMessages] = useState<IWebSocketMessageContent[]>([])
+  const [gameState, setGameState] = useState<IGameState | null>(null)
   // const [broadcastmessage, setBroadcastMessage] = useState<string>('')
 
   const sendBroadcastMessage = (message: string): void => {
@@ -41,7 +44,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
     sendWsMessage(JSON.stringify(msg))
   }
 
-  const connectToRoom = (roomId: string): void =>{
+  const connectToRoom = (roomId: string): void => {
     const msg: IwebSocketMessageOut = {
       type: EWsMessageTypeOut.connectToRoom,
       content: {
@@ -72,7 +75,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
     sendWsMessage(JSON.stringify(msg))
   }
 
-  const disconnectFromRoom = (): void =>{
+  const disconnectFromRoom = (): void => {
     const msg: IwebSocketMessageOut = {
       type: EWsMessageTypeOut.disconnectFromRoom,
       content:{
@@ -83,20 +86,20 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
     sendWsMessage(JSON.stringify(msg))
   }
 
-  const createGame = (name: string): void =>{
+  const createGame = (name: string): void => {
     const msg: IwebSocketMessageOut = {
       type: EWsMessageTypeOut.createGame,
-      content:{
+      content: {
         gameName: name
       }
     }
     sendWsMessage(JSON.stringify(msg))
   }
 
-  const selectGame = (id: string): void =>{
+  const selectGame = (id: string): void => {
     const msg: IwebSocketMessageOut = {
       type: EWsMessageTypeOut.selectGame,
-      content:{
+      content: {
         gameId: id
       }
     }
@@ -132,14 +135,23 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
           console.log('=> user disconnected ! ', message.content)
           break
         case EWsMessageTypeIn.gameCreatedByYou:
-          console.log("=> created successfully!")
+          console.log('=> created successfully!')
+          setCurrentGame({
+            id: message.content.id,
+            name: message.content.name,
+            playerNumber: 0
+          })
           break
         case EWsMessageTypeIn.gameCreated:
-          console.log("=> created ", message.content)
-          setAvailableGameList(gameList=>[...gameList, message.content])
+          console.log('=> created ', message.content)
+          setAvailableGameList(gameList => [...gameList, message.content])
+          break
+        case EWsMessageTypeIn.gameState:
+          console.log('=> gameState : ', JSON.parse(message.content.state))
+          setGameState(JSON.parse(message.content.state))
           break
         case EWsMessageTypeIn.roomsGamesNotification:
-          console.log("=> NOTIFICATION : ", message.content)
+          console.log('=> NOTIFICATION : ', message.content)
           setAvailableRoomList(JSON.parse(message.content.rooms))
           setAvailableGameList(JSON.parse(message.content.games))
           break
@@ -162,7 +174,10 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         connectToRoom,
         disconnectFromRoom,
         createGame,
-        selectGame
+        selectGame,
+        currentGame,
+        gameState,
+        setCurrentGame
       }}
     >
       {props.children}
