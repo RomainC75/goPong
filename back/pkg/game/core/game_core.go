@@ -74,30 +74,21 @@ func NewGameState(commandIn chan CommandMessage, gameStateOut chan GameStateInfo
 }
 
 func (gc *GameCore)LaunchGameCore(){
-	fmt.Printf("GAME CORE CREATION")
 	go func (){
 		for{
-			fmt.Println("GAME CORE LOOP")
 			select{
 			case messageIn, _ := <- gc.CommandIn:
 				fmt.Println("messageIn : ", messageIn, gc.GameStateInfos.Bait.X)
 			default:
 			}
-			fmt.Println("============================", gc.GameStateInfos)
 			gc.GameStateInfos.Bait.X += 1
 			gc.GameStateOut <- gc.GameStateInfos
-
 			time.Sleep(time.Millisecond * time.Duration(gc.GameStateInfos.GameConfig.SpeedMs))
-
 			// var message SocketMessage.Message
 			// err := conn.ReadJSON(&message)
 			// if !errors.Is(err, nil) {
-			// 	log.Printf("error occurred: %v", err)
 			// 	break
 			// }
-
-			// fmt.Println("MESSAGEZ : ", message.Message)
-
 			// conn.WriteMessage(websocket.TextMessage, []byte(message.Message))
 		}
 		// defer conn.Close()

@@ -14,7 +14,8 @@ export enum EWsMessageTypeIn {
   gameCreatedByYou = 'GAME_CREATED_BYYOU',
   gameCreated = 'GAME_CREATED',
   roomsGamesNotification = 'ROOMS_GAMES_NOTIFICATION',
-  gameState = 'GAME_STATE'
+  gameState = 'GAME_STATE',
+  gameConfigBroadCast = 'GAME_CONFIG_BROADCAST'
 }
 
 export enum EWsMessageTypeOut {
@@ -67,6 +68,11 @@ export interface IGame {
 export interface IGameState {
   bait: IPosition
   players: [IPlayerState, IPlayerState]
+}
+
+export interface IGameConfig {
+  size: number
+  speed_ms: number
 }
 
 export interface IPlayerState {

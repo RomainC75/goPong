@@ -222,7 +222,6 @@ func (m *Manager) AddClientToGame(gameId uuid.UUID,c *Client)error{
 
 			if len(game.Clients)==game.MaxPlayerNumber{
 				game.Full=true
-				fmt.Printf("====================> LAUNCH GAME !! ")
 				game.GameCore = GameCore.NewGameState(game.CommandIn, game.GameStateOut)
 			}
 			

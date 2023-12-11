@@ -66,15 +66,20 @@ func (g *Game) AddClient(client *Client){
 			UserEmail: client.userData.UserEmail,
 		})
 	}
+
+	g.GameCore = GameCore.NewGameState(g.CommandIn, g.GameStateOut)
+
+	bConfig, _ := json.Marshal(g.GameCore.GameStateInfos.GameConfig)
 	bClients, _ := json.Marshal(clientIds)
+
 	message := SocketMessage.WebSocketMessage{
-		Type: "GAME_BROADCAST",
+		Type: "GAME_CONFIG_BROADCAST",
 		Content: map[string]string{
 			"clients": string(bClients),
+			"config": string(bConfig),
 		},
 	}
 	g.BroadcastMessage(message)
-	g.GameCore = GameCore.NewGameState(g.CommandIn, g.GameStateOut)
 }
 
 func (g *Game) RemoveClient(client *Client){
@@ -93,7 +98,6 @@ func (g *Game) writeMessages(){
 	for{
 		select{
 		case message, _ := <- g.GameStateOut:
-			fmt.Println("=====> MESSSAGE : ")
 			utils.PrettyDisplay(message)
 			slcState, _ := json.Marshal(message)
 

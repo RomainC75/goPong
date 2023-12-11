@@ -8,7 +8,8 @@ import {
   type IwebSocketMessageIn,
   type IwebSocketMessageOut,
   IGame,
-  IGameState
+  IGameState,
+  IGameConfig
 } from '../@types/socket.type'
 import useWebSocket from 'react-use-websocket'
 import { AuthContext } from './auth.context'
@@ -28,6 +29,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
   const [broadcastMessages, setBroadcastMessages] = useState<IWebSocketMessageContent[]>([])
   const [room, setRoom] = useState<IRoom | null>(null)
   const [currentGame, setCurrentGame] = useState<IGame | null>(null)
+  const [currentGameConfig, setCurrentGameConfig] = useState<IGameConfig | null>(null)
   const [availableRoomList, setAvailableRoomList] = useState<IRoom[]>([])
   const [availableGameList, setAvailableGameList] = useState<IGame[]>([])
   const [roomMessages, setRoomMessages] = useState<IWebSocketMessageContent[]>([])
@@ -134,6 +136,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         case EWsMessageTypeIn.userDisconnectedFromRoom:
           console.log('=> user disconnected ! ', message.content)
           break
+        //=========================
         case EWsMessageTypeIn.gameCreatedByYou:
           console.log('=> created successfully!')
           setCurrentGame({
@@ -146,6 +149,11 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
           console.log('=> created ', message.content)
           setAvailableGameList(gameList => [...gameList, message.content])
           break
+        case EWsMessageTypeIn.gameConfigBroadCast:
+          console.log("=>CONFIG ", message.content)
+          setCurrentGameConfig(JSON.parse(message.content.config))
+          break
+        //=========================
         case EWsMessageTypeIn.gameState:
           console.log('=> gameState : ', JSON.parse(message.content.state))
           setGameState(JSON.parse(message.content.state))
@@ -177,7 +185,8 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         selectGame,
         currentGame,
         gameState,
-        setCurrentGame
+        setCurrentGame,
+        currentGameConfig
       }}
     >
       {props.children}
