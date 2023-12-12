@@ -5,38 +5,6 @@ import (
 	"time"
 )
 
-type GameCore struct {
-	CommandIn chan CommandMessage
-	GameStateOut chan GameStateInfos
-	GameStateInfos GameStateInfos
-}
-
-type GameConfig struct{
-	Size uint `json:"size"`
-	SpeedMs uint `json:"speed_ms"`
-}
-
-type Position struct{
-	X float64 `json:"x"`
-	Y float64 `json:"y"`
-}
-
-type CommandMessage struct{
-	PlayerNumber int
-	Command string
-}
-
-type Player struct {
-	Score int `json:"score"`
-	Positions []Position `json:"positions"`
-}
-
-type GameStateInfos struct{
-	Bait Position `json:"bait"`
-	Players []Player `json:"players"`
-	Level uint `json:"level"`
-	GameConfig GameConfig `json:"game_config"`
-}
 
 func NewPlayer(number int) Player{
 	position := Position{0,1}
@@ -81,8 +49,11 @@ func (gc *GameCore)LaunchGameCore(){
 				fmt.Println("messageIn : ", messageIn, gc.GameStateInfos.Bait.X)
 			default:
 			}
+
+			
 			gc.GameStateInfos.Bait.X += 1
 			gc.GameStateOut <- gc.GameStateInfos
+
 			time.Sleep(time.Millisecond * time.Duration(gc.GameStateInfos.GameConfig.SpeedMs))
 			// var message SocketMessage.Message
 			// err := conn.ReadJSON(&message)
