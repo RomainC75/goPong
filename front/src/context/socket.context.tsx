@@ -108,6 +108,17 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
     sendWsMessage(JSON.stringify(msg))
   }
 
+  const sendKeyCode = (key: number) => {
+    const msg: IwebSocketMessageOut = {
+      type: EWsMessageTypeOut.gameCommande,
+      content: {
+        command: `${key}`
+      }
+    }
+    console.log("=> key : ", key)
+    sendWsMessage(JSON.stringify(msg))
+  }
+
   useEffect(() => {
     if (lastMessage !== null) {
       console.log('=> last message : ', lastMessage)
@@ -186,7 +197,8 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         currentGame,
         gameState,
         setCurrentGame,
-        currentGameConfig
+        currentGameConfig,
+        sendKeyCode
       }}
     >
       {props.children}

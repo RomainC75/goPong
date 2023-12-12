@@ -25,4 +25,5 @@ export interface SocketContextInterface {
   setCurrentGame: (currentGame: IGame) => void
   currentGameConfig: IGameConfig | null
   // setMessages: (messages: Array<IwebSocketMessageIn | IwebSocketMessageOut>) => void
+  sendKeyCode: (code: number) => void
 }

@@ -8,7 +8,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	SocketMessage "github.com/saegus/test-technique-romain-chenard/api/dto/requests"
-	GameCore "github.com/saegus/test-technique-romain-chenard/pkg/game/core"
 )
 
 type ClientList map[*Client]bool
@@ -125,10 +124,11 @@ func (c *Client) readMessages(){
 			gameId, _ := uuid.Parse(message.Content["gameId"])
 			c.manager.AddClientToGame(gameId, c)
 		case "GAME_COMMAND":
-			c.Game.CommandIn <- GameCore.CommandMessage{
-				PlayerNumber: 0,
-				Command: message.Content["command"],
-			}
+			fmt.Println("==>COMMAND : ", message.Content)
+			// c.Game.CommandIn <- GameCore.CommandMessage{
+			// 	PlayerNumber: 0,
+			// 	Command: message.Content["command"],
+			// }
 		}
 
 	}
