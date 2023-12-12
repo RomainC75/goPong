@@ -222,7 +222,8 @@ func (m *Manager) AddClientToGame(gameId uuid.UUID,c *Client)error{
 
 			if len(game.Clients)==game.MaxPlayerNumber{
 				game.Full=true
-				game.GameCore = GameCore.NewGameState(game.CommandIn, game.GameStateOut)
+				// ????????????????????????????????????????
+				game.GameCore = GameCore.NewGameState(game.p1CommandIn, game.p2CommandIn, game.GameStateOut)
 			}
 			
 			return nil

@@ -19,9 +19,10 @@ func NewPlayer(number int) Player{
 	}
 }
 
-func NewGameState(commandIn chan CommandMessage, gameStateOut chan GameStateInfos) *GameCore{
+func NewGameState(p1CommandIn chan CommandMessage, p2CommandIn chan CommandMessage, gameStateOut chan GameStateInfos) *GameCore{
 	gc := GameCore{
-		CommandIn: commandIn,
+		p1CommandIn: p1CommandIn,
+		p2CommandIn: p2CommandIn,
 		GameStateOut: gameStateOut,
 		GameStateInfos: GameStateInfos{
 			Level: 1,
@@ -45,11 +46,25 @@ func (gc *GameCore)LaunchGameCore(){
 	go func (){
 		for{
 			select{
-			case messageIn, _ := <- gc.CommandIn:
-				fmt.Println("messageIn : ", messageIn, gc.GameStateInfos.Bait.X)
+			case messageIn, _ := <- gc.p1CommandIn:
+				
+				
+				// for messageIn := range gc.p1CommandIn {
+					
+				// }
+				fmt.Println("messageIn P1: ", messageIn, gc.GameStateInfos.Bait.X)
 			default:
 			}
 
+			select{
+			case messageIn, _ := <- gc.p2CommandIn:
+				
+				// for messageIn := range gc.p2CommandIn {
+				// 	if messageIn.PlayerNumber
+				// }
+				fmt.Println("messageIn P2: ", messageIn, gc.GameStateInfos.Bait.X)
+			default:
+			}
 			
 			gc.GameStateInfos.Bait.X += 1
 			gc.GameStateOut <- gc.GameStateInfos

@@ -1,8 +1,8 @@
 package game
 
-
 type GameCore struct {
-	CommandIn chan CommandMessage
+	p1CommandIn chan CommandMessage
+	p2CommandIn chan CommandMessage
 	GameStateOut chan GameStateInfos
 	GameStateInfos GameStateInfos
 }

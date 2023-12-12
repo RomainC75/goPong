@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	SocketMessage "github.com/saegus/test-technique-romain-chenard/api/dto/requests"
+	GameStruct "github.com/saegus/test-technique-romain-chenard/pkg/game/core"
 )
 
 type ClientList map[*Client]bool
@@ -24,6 +25,8 @@ type Client struct {
 	egress chan []byte
 	Room *Room
 	Game *Game
+	PlayerNumber int
+	CommandIn chan GameStruct.CommandMessage
 }
 
 func NewClient(conn *websocket.Conn, manager *Manager, userData UserData) *Client{
@@ -125,12 +128,13 @@ func (c *Client) readMessages(){
 			c.manager.AddClientToGame(gameId, c)
 		case "GAME_COMMAND":
 			fmt.Println("==>COMMAND : ", message.Content)
-			// c.Game.CommandIn <- GameCore.CommandMessage{
-			// 	PlayerNumber: 0,
-			// 	Command: message.Content["command"],
-			// }
+			if(c.Game != nil){
+				c.CommandIn <- GameStruct.CommandMessage{
+					PlayerNumber: c.PlayerNumber,
+					Command: "1",
+				}
+			}
 		}
-
 	}
 }
 
