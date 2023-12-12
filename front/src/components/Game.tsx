@@ -1,52 +1,53 @@
-import React, { useContext, useEffect, useState } from "react"
-import { SocketContext } from "../context/socket.context"
-import { SocketContextInterface } from "../@types/socketContext.type"
-import { CurrencyRuble, Games, GamesRounded } from "@mui/icons-material"
-import './styles/game.scss'
+import React, { useContext, useEffect, useState } from "react";
+import { SocketContext } from "../context/socket.context";
+import { SocketContextInterface } from "../@types/socketContext.type";
+import { CurrencyRuble, Games, GamesRounded } from "@mui/icons-material";
+import "./styles/game.scss";
 interface IGridDot {
-  color: string | undefined
+  color: string | undefined;
 }
 
 const Game = () => {
   const { currentGame, currentGameConfig, gameState } = useContext(
     SocketContext
-  ) as SocketContextInterface
-  const [grid, setGrid] = useState<IGridDot[][]>([])
+  ) as SocketContextInterface;
+  const [grid, setGrid] = useState<IGridDot[][]>([]);
 
   useEffect(() => {
-      if (currentGameConfig) {
-        const tempGrid: IGridDot[][] = []
+    if (currentGameConfig) {
+      const tempGrid: IGridDot[][] = [];
       for (let i = 0; i < currentGameConfig?.size; i++) {
-        tempGrid.push([])
+        tempGrid.push([]);
         for (let j = 0; j < currentGameConfig?.size; j++) {
-          tempGrid[i].push({color:"none"})
+          tempGrid[i].push({ color: "none" });
         }
       }
-      setGrid(tempGrid)
-      console.log("=> init : ", tempGrid)
+      setGrid(tempGrid);
+      console.log("=> init : ", tempGrid);
     }
-  }, [currentGameConfig])
+  }, [currentGameConfig]);
 
   useEffect(() => {
-    if(currentGameConfig && gameState && grid){
-        console.log("=> refresh", grid, currentGameConfig)
-        const tempGrid = grid
-        for(let line=0; line<currentGameConfig?.size; line++){
-            for(let column=0; column<currentGameConfig?.size; column++){
-                if(gameState?.bait.x==column && gameState.bait.y==line){
-                    tempGrid[line][column]={
-                        color:'red'
-                    }
-                }else{
-                    tempGrid[line][column]={
-                        color:'blue'
-                    }
-                }
-            }
+    if (currentGameConfig && gameState && grid.length) {
+      const tempGrid = grid;
+      for (let line = 0; line < currentGameConfig?.size; line++) {
+        for (let column = 0; column < currentGameConfig?.size; column++) {
+            console.log("=>>>>>>>>>>>>>>>>", gameState.bait, line, column)
+          if (gameState?.bait.x == column && gameState.bait.y == line) {
+            tempGrid[line][column] = {
+              color: "red",
+            };
+          } else {
+            tempGrid[line][column] = {
+              color: "none",
+            };
+          }
         }
-        setGrid(tempGrid)
+      }
+      console.log("=> refresh", tempGrid, gameState, currentGameConfig);
+      setGrid(tempGrid);
     }
-  }, [gameState])
+  }, [gameState, currentGameConfig]);
 
   return (
     <div className="Game">
@@ -58,15 +59,15 @@ const Game = () => {
       </div>
       <ul className="grid">
         {grid.map((line, i) => (
-          <li key={'line'+i}>
+          <li key={"line" + i}>
             {line.map((dot, j) => (
-              <div key={'dot'+i+j} className={"dot " + dot.color}></div>
+              <div key={"dot" + i + j} className={"dot " + dot.color}></div>
             ))}
           </li>
         ))}
       </ul>
     </div>
-  )
-}
+  );
+};
 
-export default Game
+export default Game;
