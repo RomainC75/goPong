@@ -1,8 +1,12 @@
 package game
 
+import (
+	"sync"
+)
+
 type GameCore struct {
-	p1CommandIn chan CommandMessage
-	p2CommandIn chan CommandMessage
+	sync.RWMutex
+	CommandsIn []chan int
 	GameStateOut chan GameStateInfos
 	GameStateInfos GameStateInfos
 }
@@ -19,7 +23,7 @@ type Position struct{
 
 type CommandMessage struct{
 	PlayerNumber int
-	Command string
+	Command int
 }
 
 type Player struct {
@@ -33,4 +37,5 @@ type GameStateInfos struct{
 	Players []Player `json:"players"`
 	Level uint `json:"level"`
 	GameConfig GameConfig `json:"game_config"`
+	LastCommands []int `json:"last_command"`
 }

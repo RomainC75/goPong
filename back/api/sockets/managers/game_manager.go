@@ -44,11 +44,11 @@ func NewGame(manager *Manager, c *Client, name string )*Game{
 		Manager: manager,
 		Clients: newClientList,
 		MaxPlayerNumber: 2,
-		p1CommandIn: make(chan GameCore.CommandMessage, 1000),
-		p2CommandIn: make(chan GameCore.CommandMessage, 1000),
+		// p1CommandIn: make(chan GameCore.CommandMessage, 1000),
+		// p2CommandIn: make(chan GameCore.CommandMessage, 1000),
 		GameStateOut: make(chan GameCore.GameStateInfos, 1000),
 	}
-	c.CommandIn = g.p1CommandIn
+	// c.CommandIn = g.p1CommandIn
 	go g.writeMessages()
 	return g
 }
@@ -62,18 +62,28 @@ func (g *Game) BroadcastMessage(wsMessage SocketMessage.WebSocketMessage){
 }
 
 func (g *Game) AddClient(client *Client){
+	// ---- creation
+	commandArray := []chan int{
+		make( chan int ),
+		make( chan int ),
+	}
+
 	client.PlayerNumber = 1
-	client.CommandIn = g.p2CommandIn
+	
 	g.Clients = append(g.Clients, client)
 	clientIds := []UserData{}
-	for _, client := range g.Clients{
+	for i, client := range g.Clients{
+		client.CommandIn = commandArray[i]
 		clientIds = append(clientIds, UserData{
 			UserId: client.userData.UserId,
 			UserEmail: client.userData.UserEmail,
 		})
 	}
+	// allocation to gameCore
+	g.Full=true
+	g.GameCore = GameCore.NewGameState(g.GameStateOut, commandArray)
 
-	g.GameCore = GameCore.NewGameState(g.p1CommandIn, g.p2CommandIn, g.GameStateOut)
+
 
 	bConfig, _ := json.Marshal(g.GameCore.GameStateInfos.GameConfig)
 	bClients, _ := json.Marshal(clientIds)

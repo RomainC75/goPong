@@ -15,7 +15,6 @@ import (
 	"github.com/gorilla/websocket"
 	SocketMessage "github.com/saegus/test-technique-romain-chenard/api/dto/requests"
 	config "github.com/saegus/test-technique-romain-chenard/config"
-	GameCore "github.com/saegus/test-technique-romain-chenard/pkg/game/core"
 )
 
 type ManagerInterface interface{
@@ -220,13 +219,13 @@ func (m *Manager) AddClientToGame(gameId uuid.UUID,c *Client)error{
 			game.AddClient(c)
 			fmt.Println("CLIENT added ! :", game.Clients)
 
-			if len(game.Clients)==game.MaxPlayerNumber{
-				game.Full=true
-				// ????????????????????????????????????????
-				game.GameCore = GameCore.NewGameState(game.p1CommandIn, game.p2CommandIn, game.GameStateOut)
-			}
 			
-			return nil
+
+			// if len(game.Clients)==game.MaxPlayerNumber{
+				
+				// game.GameCore = GameCore.NewGameState(game.GameStateOut)
+			// }
+			// return nil
 		}
 	}
 	return errors.New("game not found")

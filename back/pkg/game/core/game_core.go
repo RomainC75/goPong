@@ -19,10 +19,9 @@ func NewPlayer(number int) Player{
 	}
 }
 
-func NewGameState(p1CommandIn chan CommandMessage, p2CommandIn chan CommandMessage, gameStateOut chan GameStateInfos) *GameCore{
+func NewGameState(gameStateOut chan GameStateInfos, commandArray []chan int) *GameCore{
 	gc := GameCore{
-		p1CommandIn: p1CommandIn,
-		p2CommandIn: p2CommandIn,
+		CommandsIn: commandArray,
 		GameStateOut: gameStateOut,
 		GameStateInfos: GameStateInfos{
 			Level: 1,
@@ -35,36 +34,35 @@ func NewGameState(p1CommandIn chan CommandMessage, p2CommandIn chan CommandMessa
 				Size: 30,
 				SpeedMs: 1000,
 			},
+			LastCommands: []int{10,10},
 		},
 		
 	}
 	gc.LaunchGameCore()
+	gc.LaunchCommandListener(0)
+	gc.LaunchCommandListener(1)
 	return &gc
 }
+
+func (gc *GameCore)LaunchCommandListener(PlayerNumber int){
+	go func(){
+		for{
+			select{
+			case command  := <- gc.CommandsIn[PlayerNumber]:
+				fmt.Println("=> WRITE COMMAND DATA !!", command)
+				gc.Lock()
+				gc.GameStateInfos.LastCommands[PlayerNumber] = command
+				gc.Unlock()
+			}
+		}
+	}()
+}
+
 
 func (gc *GameCore)LaunchGameCore(){
 	go func (){
 		for{
-			select{
-			case messageIn, _ := <- gc.p1CommandIn:
-				
-				
-				// for messageIn := range gc.p1CommandIn {
-					
-				// }
-				fmt.Println("messageIn P1: ", messageIn, gc.GameStateInfos.Bait.X)
-			default:
-			}
-
-			select{
-			case messageIn, _ := <- gc.p2CommandIn:
-				
-				// for messageIn := range gc.p2CommandIn {
-				// 	if messageIn.PlayerNumber
-				// }
-				fmt.Println("messageIn P2: ", messageIn, gc.GameStateInfos.Bait.X)
-			default:
-			}
+			// get the client.LastValue from the core ?
 			
 			gc.GameStateInfos.Bait.X += 1
 			gc.GameStateOut <- gc.GameStateInfos

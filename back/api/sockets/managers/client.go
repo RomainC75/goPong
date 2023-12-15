@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	SocketMessage "github.com/saegus/test-technique-romain-chenard/api/dto/requests"
-	GameStruct "github.com/saegus/test-technique-romain-chenard/pkg/game/core"
 )
 
 type ClientList map[*Client]bool
@@ -19,6 +19,7 @@ type UserData struct {
 }
 
 type Client struct {
+
 	userData UserData
 	connection *websocket.Conn
 	manager *Manager
@@ -26,7 +27,8 @@ type Client struct {
 	Room *Room
 	Game *Game
 	PlayerNumber int
-	CommandIn chan GameStruct.CommandMessage
+	CommandIn chan int
+	LastCommand int
 }
 
 func NewClient(conn *websocket.Conn, manager *Manager, userData UserData) *Client{
@@ -129,14 +131,17 @@ func (c *Client) readMessages(){
 		case "GAME_COMMAND":
 			fmt.Println("==>COMMAND : ", message.Content)
 			if(c.Game != nil){
-				c.CommandIn <- GameStruct.CommandMessage{
-					PlayerNumber: c.PlayerNumber,
-					Command: "1",
-				}
+				command, _ := strconv.Atoi(message.Content["command"])
+				fmt.Println("client writing command : ", command)
+				c.CommandIn <- command
 			}
 		}
 	}
 }
+
+// func (c *Client) WriteLastCommand(){
+// 	c.L
+// }
 
 func (c *Client) writeMessages(){
 	defer func(){
