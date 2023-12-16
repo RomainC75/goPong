@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
-import { SocketContext } from "../context/socket.context";
-import { SocketContextInterface } from "../@types/socketContext.type";
-import { CurrencyRuble, Games, GamesRounded } from "@mui/icons-material";
-import "./styles/game.scss";
+import React, { useContext, useEffect, useState } from 'react';
+import { SocketContext } from '../context/socket.context';
+import { SocketContextInterface } from '../@types/socketContext.type';
+import { CurrencyRuble, Games, GamesRounded } from '@mui/icons-material';
+import './styles/game.scss';
 interface IGridDot {
   color: string | undefined;
 }
@@ -15,10 +15,10 @@ const Game = () => {
 
   useEffect(() => {
     document.addEventListener('keydown', function (event) {
-      const codeArr = [39, 38, 37, 40];
+      const codeArr = [39, 37];
       const index = codeArr.findIndex((code) => code === event.keyCode);
       if (index >= 0) {
-        sendKeyCode(index);
+        sendKeyCode(index === 0 ? -1 : 1);
       }
     });
   }, []);
@@ -41,9 +41,39 @@ const Game = () => {
       const tempGrid = grid;
       for (let line = 0; line < currentGameConfig?.size; line++) {
         for (let column = 0; column < currentGameConfig?.size; column++) {
-          if (gameState?.bait.x == column && gameState.bait.y == line) {
+          if (column == gameState.bait.x && line == gameState.bait.y) {
             tempGrid[line][column] = {
               color: 'red',
+            };
+          } else if (
+            gameState.players[0].positions[0].x == column &&
+            gameState.players[0].positions[0].y == line
+          ) {
+            tempGrid[line][column] = {
+              color: 'player1-head',
+            };
+          } else if (
+            gameState.players[0].positions.find(
+              (p) => p.x == column && p.y == line
+            )
+          ) {
+            tempGrid[line][column] = {
+              color: 'player1',
+            };
+          } else if (
+            gameState.players[1].positions[0].x == column &&
+            gameState.players[1].positions[0].y == line
+          ) {
+            tempGrid[line][column] = {
+              color: 'player2-head',
+            };
+          } else if (
+            gameState.players[1].positions.find(
+              (p) => p.x == column && p.y == line
+            )
+          ) {
+            tempGrid[line][column] = {
+              color: 'player2',
             };
           } else {
             tempGrid[line][column] = {
@@ -52,6 +82,7 @@ const Game = () => {
           }
         }
       }
+      console.log('=> new GRID : ', tempGrid);
       setGrid(tempGrid);
     }
   }, [gameState, currentGameConfig]);
@@ -65,9 +96,9 @@ const Game = () => {
         <p>player number : {currentGame?.playerNumber}</p>
       </div>
       <ul className='grid'>
-        {grid.map((line, i) => (
+        {grid.map((lines, i) => (
           <li key={'line' + i}>
-            {line.map((dot, j) => (
+            {lines.map((dot, j) => (
               <div key={'dot' + i + j} className={'dot ' + dot.color}></div>
             ))}
           </li>

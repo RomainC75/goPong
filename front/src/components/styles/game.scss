@@ -9,6 +9,18 @@
                 &.red{
                     background-color: red;
                 }
+                &.player1-head{
+                    background-color: rgb(1, 226, 1);
+                }
+                &.player1{
+                    background-color: green;
+                }
+                &.player2-head{
+                    background-color: rgb(0, 140, 227);
+                }
+                &.player2{
+                    background-color: rgb(0, 87, 142);
+                }
                 &.none{
                     background-color: white;
                 }

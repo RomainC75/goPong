@@ -69,6 +69,12 @@ export interface IGame {
 export interface IGameState {
   bait: IPosition
   players: [IPlayerState, IPlayerState]
+  lever: number
+  game_config: {
+    size: number
+    speed_ms: number
+  }
+  lastCommands: number[]
 }
 
 export interface IGameConfig {
@@ -79,6 +85,7 @@ export interface IGameConfig {
 export interface IPlayerState {
   score: number
   positions: IPosition[]
+  direction: number
 }
 
 export interface IPosition {
