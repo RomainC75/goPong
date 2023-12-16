@@ -4,6 +4,7 @@ import {
   IGame,
   IGameState,
   IGameConfig,
+  IGridDot,
 } from './socket.type'
 
 export interface SocketContextInterface {
@@ -26,4 +27,5 @@ export interface SocketContextInterface {
   currentGameConfig: IGameConfig | null
   // setMessages: (messages: Array<IwebSocketMessageIn | IwebSocketMessageOut>) => void
   sendKeyCode: (code: number) => void
+  grid: IGridDot[][];
 }

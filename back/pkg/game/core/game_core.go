@@ -83,13 +83,13 @@ func (gc *GameCore)MoveSnakes(){
 	gc.Lock()
 	for playerNumber, player := range gc.GameStateInfos.Players{
 		fmt.Println(" ==================================================> player : ", playerNumber)
-		fmt.Println("player positions : ", player.Positions)
+		// fmt.Println("player positions : ", player.Positions)
 		for elIndex:= len(player.Positions)-1; elIndex>=0 ; elIndex--{
 			if elIndex > 0 {
 				gc.GameStateInfos.Players[playerNumber].Positions[elIndex] = gc.GameStateInfos.Players[playerNumber].Positions[elIndex-1]
 			}else if elIndex == 0 {
 				gc.GameStateInfos.Players[playerNumber].Direction = (gc.GameStateInfos.Players[playerNumber].Direction + gc.GameStateInfos.LastCommands[playerNumber]) % 4
-				fmt.Println("direction : ", gc.GameStateInfos.Players[playerNumber].Direction)
+				// fmt.Println("direction : ", gc.GameStateInfos.Players[playerNumber].Direction)
 				if gc.GameStateInfos.Players[playerNumber].Direction == -1 {
 					gc.GameStateInfos.Players[playerNumber].Direction = 3
 				}
@@ -105,11 +105,11 @@ func (gc *GameCore)MoveSnakes(){
 				case 3:
 					gc.GameStateInfos.Players[playerNumber].Positions[0].Y ++
 				}
-				fmt.Println("new head positions : ", gc.GameStateInfos.Players[playerNumber].Positions[elIndex])
+				// fmt.Println("new head positions : ", gc.GameStateInfos.Players[playerNumber].Positions[elIndex])
 
 			}
 		}
-		fmt.Println("new player positions : ", gc.GameStateInfos.Players[playerNumber].Positions)
+		fmt.Println("new player positions : ", gc.GameStateInfos.Players[playerNumber].Positions[0])
 	}
 	gc.Unlock()
 }
