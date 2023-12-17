@@ -10,33 +10,14 @@ func NewPlayer(playerNumber int, size int) Player{
 	if playerNumber > 0 {
 		position.Y=-1
 	}
-	var direction int
-	if playerNumber==0{
-		direction=1
-	}else{
-		direction=3
-	}
+	
+	
 	xShift := 4
 	return Player{
 		Score: 0,
 		Positions: getPlayerFirstPositions(playerNumber, size, xShift, 3),
-		Direction: direction,
+		Direction: initDirection(playerNumber),
 	}
-}
-
-func getPlayerFirstPositions(playerNumber int, size int, xShift int,length int) (positions []Position){
-	direction := 1
-	if playerNumber==0{
-		direction = -1
-	}
-	positions = []Position{}
-	for i:=0 ; i<length ; i++{
-		positions = append(positions, Position{
-			(size/2)-xShift+playerNumber*(xShift*2),
-			(size/2) + -direction * i,
-		})
-	}
-	return 
 }
 
 func NewGameState(gameStateOut chan GameStateInfos, commandArray []chan int) *GameCore{
@@ -119,16 +100,40 @@ func (gc *GameCore)IsCollision() bool{
 	for _, player := range gc.GameStateInfos.Players{
 		concatenatedPositions = append(concatenatedPositions, player.Positions...)
 	}
-	fmt.Println("concatenatedPositions : ", concatenatedPositions)
 	for i, position := range concatenatedPositions{
 		for j, comparedPosition := range concatenatedPositions{
 			if i!=j && position.X == comparedPosition.X && position.Y == comparedPosition.Y{
 				fmt.Println("collision : ==> ", i, position, j, comparedPosition)
+
 				return true
 			}
 		}
 	}
 	return false
+}
+
+func (gc *GameCore)IsOutOfBoard() ([]bool){
+	res := []bool{
+		false,
+		false,
+	}
+	for n, p := range gc.GameStateInfos.Players{
+		size := gc.GameStateInfos.GameConfig.Size
+		if p.Positions[0].X >= int(size) || p.Positions[0].X < 0 || p.Positions[0].Y >= int(size) || p.Positions[0].Y < 0 {
+				res[n]=true
+			}
+	}
+	return res
+}
+
+
+func (gc *GameCore)Reset(){
+	xShift := 4
+	for i := range gc.GameStateInfos.Players{
+		gc.GameStateInfos.Players[i].Positions = getPlayerFirstPositions(i, int(gc.GameStateInfos.GameConfig.Size), xShift, 3)
+		gc.GameStateInfos.Players[i].Direction = initDirection(i)
+	}
+	time.Sleep(time.Millisecond * time.Duration(gc.GameStateInfos.GameConfig.SpeedMs))
 }
 
 
@@ -139,19 +144,47 @@ func (gc *GameCore)LaunchGameCore(){
 			
 			// set new Bait if necessary
 
-			
 			// Move players
 			gc.MoveSnakes()
-			if gc.IsCollision(){
-				fmt.Println("COLLISION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-				break
-			}
-
 			gc.GameStateOut <- gc.GameStateInfos
 
+			isOut := gc.IsOutOfBoard()
+			isCollision := gc.IsCollision()
+
+			if isOut[0] || isOut[1] || isCollision{
+				fmt.Printf("OUT ! ")
+				gc.Reset()
+			}
+			
 			time.Sleep(time.Millisecond * time.Duration(gc.GameStateInfos.GameConfig.SpeedMs))
 			
 		}
 		// defer conn.Close()
 	}()
+}
+
+// =========================================== HELPERS ===========================================
+
+func initDirection(playerNumber int) int{
+	if playerNumber==0{
+		return 1
+	}else{
+		return 3
+	}
+}
+
+
+func getPlayerFirstPositions(playerNumber int, size int, xShift int,length int) (positions []Position){
+	direction := 1
+	if playerNumber==0{
+		direction = -1
+	}
+	positions = []Position{}
+	for i:=0 ; i<length ; i++{
+		positions = append(positions, Position{
+			(size/2)-xShift+playerNumber*(xShift*2),
+			(size/2) + -direction * i,
+		})
+	}
+	return 
 }

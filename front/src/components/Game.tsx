@@ -11,7 +11,6 @@ const Game = () => {
   const { currentGame, sendKeyCode, grid } = useContext(
     SocketContext
   ) as SocketContextInterface;
-  
 
   useEffect(() => {
     document.addEventListener('keydown', function (event) {
@@ -23,6 +22,10 @@ const Game = () => {
     });
   }, []);
 
+  useEffect(()=>{
+    console.log("=> inside Game : ", grid)
+  }, [grid])
+
   return (
     <div className='Game'>
       <h3>Game </h3>
@@ -31,12 +34,10 @@ const Game = () => {
         <p>id : {currentGame?.id}</p>
         <p>player number : {currentGame?.playerNumber}</p>
       </div>
-      <ul className='grid'>
+      <ul className='grid '>
         {grid.map((lines, i) => (
           <li key={'line' + i}>
-            {lines.map((dot, j) => (
-              <div key={'dot' + i + j} className={'dot ' + dot.color}></div>
-            ))}
+            { lines.map((dot, j) => <div key={'dot' + i + j} className={'dot ' + dot.color}></div>) }
           </li>
         ))}
       </ul>

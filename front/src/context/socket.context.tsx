@@ -9,18 +9,18 @@ import { type SocketContextInterface } from "../@types/socketContext.type";
 import {
   EWsMessageTypeIn,
   EWsMessageTypeOut,
-  IWebSocketMessageContent,
+  type IWebSocketMessageContent,
   type IRoom,
   type IwebSocketMessageIn,
   type IwebSocketMessageOut,
-  IGame,
-  IGameState,
-  IGameConfig,
-  IGridDot,
+  type IGame,
+  type IGameState,
+  type IGameConfig,
+  type IGridDot,
 } from "../@types/socket.type";
 import useWebSocket from "react-use-websocket";
 import { AuthContext } from "./auth.context";
-import { AuthContextInterface } from "../@types/authContext.type";
+import { type AuthContextInterface } from "../@types/authContext.type";
 import { initGrid, refreshGrid } from "../utils/gameGrid";
 
 const SocketContext = createContext<SocketContextInterface | null>(null);

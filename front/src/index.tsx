@@ -7,6 +7,7 @@ import { AuthProviderWrapper } from './context/auth.context'
 import AuthPage from './pages/Auth.page'
 import IsPrivate from './components/helper/isPrivate'
 import { SocketProviderWrapper } from './context/socket.context'
+import React from 'react'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -27,7 +28,7 @@ root.render(
         </Routes>
       </AuthProviderWrapper>
     </BrowserRouter>
-  // </React.StrictMode>
+  // {/* </React.StrictMode> */}
 )
 
 reportWebVitals();
