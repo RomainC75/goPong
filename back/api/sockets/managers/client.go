@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"sync"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
@@ -19,7 +20,7 @@ type UserData struct {
 }
 
 type Client struct {
-
+	sync.RWMutex
 	userData UserData
 	connection *websocket.Conn
 	manager *Manager

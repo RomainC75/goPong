@@ -167,7 +167,6 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         case EWsMessageTypeIn.userDisconnectedFromRoom:
           console.log("=> user disconnected ! ", message.content);
           break;
-        //=========================
         case EWsMessageTypeIn.gameCreatedByYou:
           console.log("=> created successfully!");
           setCurrentGame({
@@ -190,7 +189,6 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
           setCurrentGameConfig(tempCurrentGameConfig);
           setGrid(initGrid(tempCurrentGameConfig));
           break;
-        //=========================
         case EWsMessageTypeIn.gameState:
           // eslint-disable-next-line no-case-declarations
           const newState = JSON.parse(message.content.state)

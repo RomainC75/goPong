@@ -29,14 +29,14 @@ const Game = () => {
   return (
     <div className='Game'>
       <h3>Game </h3>
-      <div>
+      <div className='infos'>
         <p>name : {currentGame?.name}</p>
         <p>id : {currentGame?.id}</p>
         <p>player number : {currentGame?.playerNumber}</p>
         <div>
-          <span className="point">{memoPoints[0]} </span>
+          <span className={`point ${currentGame?.playerNumber === 0 && 'me'}`}>{memoPoints[0]} </span>
           <span>-</span>
-          <span className="point"> {memoPoints[1]}</span>
+          <span className={`point ${currentGame?.playerNumber === 1 && 'me'}`}> {memoPoints[1]}</span>
         </div>
       </div>
       <ul className='grid '>

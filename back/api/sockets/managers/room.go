@@ -3,6 +3,7 @@ package managers
 import (
 	"encoding/json"
 	"fmt"
+	"sync"
 
 	"github.com/google/uuid"
 	SocketMessage "github.com/saegus/test-technique-romain-chenard/api/dto/requests"
@@ -16,6 +17,7 @@ type RoomBasicInfos struct{
 	Name string `json:"name"`
 }
 type Room struct{
+	sync.RWMutex
 	Id uuid.UUID
 	Name string
 	RoomBasicInfos
@@ -39,12 +41,13 @@ func (r *Room)AddClient(client *Client){
 }
 
 func (r *Room)RemoveClient(client *Client){
+	r.Lock()
+	defer r.Unlock()
 	delete(r.Clients,client)
 }
 
 func (r *Room)BroadcastMessage(wsMessage  SocketMessage.WebSocketMessage){
 	for client := range r.Clients{
-		// client.connection.WriteJSON(newMessage)
 		fmt.Println("send.....")
 		b, _ := json.Marshal(wsMessage)
 		client.egress <- b

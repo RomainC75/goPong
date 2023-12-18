@@ -135,8 +135,10 @@ func (m *Manager) AddUserToRoom(roomUuid uuid.UUID, client *Client) error {
 }
 
 func (m *Manager) DisconnectUserFromRoom(c *Client){
-	// m.Lock()
-	// defer m.Unlock()
+	m.Lock()
+	c.Lock()
+	defer m.Unlock()
+	defer c.Unlock()
 
 	wsMessage := SocketMessage.WebSocketMessage{
 		Type: "DISCONNECTED_FROM_ROOM",
@@ -149,17 +151,15 @@ func (m *Manager) DisconnectUserFromRoom(c *Client){
 	room := c.Room
 	// remove client from room in the roomList OR delete Room
 	if len(room.Clients)==1{
-		// remove room from the roomList in Manager
 		delete(m.rooms, room)
 	}else{
-		// remove client from room in the roomList
 		delete(room.Clients, c)
 	}
 	
 	// remove room from client
 	c.Room = nil
 	
-	// notify client
+	// notify disconnected client
 	b, _ := json.Marshal(wsMessage)
 	c.egress <- b
 
@@ -175,9 +175,6 @@ func (m *Manager) DisconnectUserFromRoom(c *Client){
 }
 
 func (m *Manager) BroadcastMessage(mType string, content map[string]string ){
-	// m.Lock()
-	// defer m.Unlock()
-	
 	wsMessage := SocketMessage.WebSocketMessage{
 		Type: mType,
 		Content: content,
@@ -191,14 +188,6 @@ func (m *Manager) BroadcastMessage(mType string, content map[string]string ){
 }
 
 func (m *Manager) CreateGame(c *Client, name string) uuid.UUID{
-	// create Room in manager for game
-	// message := SocketMessage.WebSocketMessage{
-	// 	Content: map[string]string{
-	// 		"name": c.userData.UserEmail,
-	// 	},
-	// }
-	// room := m.CreateRoom(message, c)
-	
 	// add game to manager
 	newGame := NewGame(m, c, name)
 	m.games[newGame]=true
@@ -214,16 +203,9 @@ func (m *Manager) AddClientToGame(gameId uuid.UUID,c *Client)error{
 		if game.Id.String()==gameId.String() && game.Full==false {
 			// add game to client
 			c.Game=game
-			
 			// add client to game
 			game.AddClient(c)
 			fmt.Println("CLIENT added ! :", game.Clients)
-
-			// if len(game.Clients)==game.MaxPlayerNumber{
-				
-				// game.GameCore = GameCore.NewGameState(game.GameStateOut)
-			// }
-			// return nil
 		}
 	}
 	return errors.New("game not found")

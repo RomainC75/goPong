@@ -1,4 +1,14 @@
 .Game{
+    & > .infos{
+        & .point{
+            font-size: 3rem;
+            color: rgb(0, 0, 119);
+            &.me{
+                font-size: 3.5rem;
+                color: rgb(190, 0, 60);
+            }
+        }
+    }
     & .grid{
         & > li{
             display: flex;

@@ -28,8 +28,6 @@ type Game struct{
 	GameCore *GameCore.GameCore
 	MaxPlayerNumber int
 	Full bool
-	p1CommandIn chan GameCore.CommandMessage
-	p2CommandIn chan GameCore.CommandMessage
 	GameStateOut chan GameCore.GameStateInfos
 }
 
@@ -37,18 +35,14 @@ func NewGame(manager *Manager, c *Client, name string )*Game{
 	newClientList := []*Client{c}
 	c.PlayerNumber = 0
 
-	
 	g := &Game{
 		Id: uuid.New(),
 		Name: name,
 		Manager: manager,
 		Clients: newClientList,
 		MaxPlayerNumber: 2,
-		// p1CommandIn: make(chan GameCore.CommandMessage, 1000),
-		// p2CommandIn: make(chan GameCore.CommandMessage, 1000),
 		GameStateOut: make(chan GameCore.GameStateInfos, 1000),
 	}
-	// c.CommandIn = g.p1CommandIn
 	go g.writeMessages()
 	return g
 }
@@ -83,8 +77,6 @@ func (g *Game) AddClient(client *Client){
 	g.Full=true
 	g.GameCore = GameCore.NewGameState(g.GameStateOut, commandArray)
 
-
-
 	bConfig, _ := json.Marshal(g.GameCore.GameStateInfos.GameConfig)
 	bClients, _ := json.Marshal(clientIds)
 
@@ -107,14 +99,9 @@ func (g *Game) RemoveClient(client *Client){
 }
 
 func (g *Game) writeMessages(){
-	// defer func(){
-	// 	c.manager.RemoveClient(c)
-	// }()
-
 	for{
 		select{
 		case message, _ := <- g.GameStateOut:
-			// utils.PrettyDisplay(message)
 			slcState, _ := json.Marshal(message)
 
 			g.BroadcastMessage(SocketMessage.WebSocketMessage{
