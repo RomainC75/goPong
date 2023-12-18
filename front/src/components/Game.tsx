@@ -8,7 +8,7 @@ import { initGrid } from '../utils/gameGrid';
 
 
 const Game = () => {
-  const { currentGame, sendKeyCode, grid } = useContext(
+  const { currentGame, sendKeyCode, grid, memoPoints } = useContext(
     SocketContext
   ) as SocketContextInterface;
 
@@ -33,6 +33,11 @@ const Game = () => {
         <p>name : {currentGame?.name}</p>
         <p>id : {currentGame?.id}</p>
         <p>player number : {currentGame?.playerNumber}</p>
+        <div>
+          <span className="point">{memoPoints[0]} </span>
+          <span>-</span>
+          <span className="point"> {memoPoints[1]}</span>
+        </div>
       </div>
       <ul className='grid '>
         {grid.map((lines, i) => (

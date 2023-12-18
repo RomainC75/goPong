@@ -4,6 +4,7 @@ import {
   type PropsWithChildren,
   useEffect,
   useContext,
+  useMemo
 } from "react";
 import { type SocketContextInterface } from "../@types/socketContext.type";
 import {
@@ -46,9 +47,14 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
   const [roomMessages, setRoomMessages] = useState<IWebSocketMessageContent[]>(
     []
   );
+  const [pointsState, setPointsState] = useState<[number, number]>([0,0])
+  const memoPoints = useMemo(()=>{
+    return pointsState
+  }, [pointsState])
+
+
   const [gameState, setGameState] = useState<IGameState | null>(null);
   const [grid, setGrid] = useState<IGridDot[][]>([]);
-  // const [broadcastmessage, setBroadcastMessage] = useState<string>('')
 
   const sendBroadcastMessage = (message: string): void => {
     const msg: IwebSocketMessageOut = {
@@ -183,13 +189,17 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
           ) as IGameConfig;
           setCurrentGameConfig(tempCurrentGameConfig);
           setGrid(initGrid(tempCurrentGameConfig));
-
           break;
         //=========================
         case EWsMessageTypeIn.gameState:
-          // setGameState(JSON.parse(message.content.state))
           // eslint-disable-next-line no-case-declarations
-          const tempgrid = refreshGrid(grid, JSON.parse(message.content.state));
+          const newState = JSON.parse(message.content.state)
+          console.log("=> state : ", newState)
+
+          setPointsState(newState.players.map((p: {score: number})=>p.score))
+
+          // eslint-disable-next-line no-case-declarations
+          const tempgrid = refreshGrid(grid, newState);
           console.log("=> gameState : ", tempgrid);
 
           setGrid(tempgrid ?? []);
@@ -226,6 +236,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         currentGameConfig,
         sendKeyCode,
         grid,
+        memoPoints
       }}
     >
       {props.children}

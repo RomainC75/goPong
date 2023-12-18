@@ -27,5 +27,6 @@ export interface SocketContextInterface {
   currentGameConfig: IGameConfig | null
   // setMessages: (messages: Array<IwebSocketMessageIn | IwebSocketMessageOut>) => void
   sendKeyCode: (code: number) => void
-  grid: IGridDot[][];
+  grid: IGridDot[][]
+  memoPoints: [number, number]
 }

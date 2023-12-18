@@ -95,21 +95,42 @@ func (gc *GameCore)MoveSnakes(){
 	gc.Unlock()
 }
 
-func (gc *GameCore)IsCollision() bool{
-	concatenatedPositions := []Position{}
-	for _, player := range gc.GameStateInfos.Players{
-		concatenatedPositions = append(concatenatedPositions, player.Positions...)
-	}
-	for i, position := range concatenatedPositions{
-		for j, comparedPosition := range concatenatedPositions{
-			if i!=j && position.X == comparedPosition.X && position.Y == comparedPosition.Y{
-				fmt.Println("collision : ==> ", i, position, j, comparedPosition)
+func (gc *GameCore)IsCollision() []bool{
+	// concatenatedPositions := []Position{}
+	// for _, player := range gc.GameStateInfos.Players{
+	// 	concatenatedPositions = append(concatenatedPositions, player.Positions...)
+	// }
+	// for i, position := range concatenatedPositions{
+	// 	for j, comparedPosition := range concatenatedPositions{
+	// 		if i!=j && position.X == comparedPosition.X && position.Y == comparedPosition.Y{
+	// 			fmt.Println("collision : ==> ", i, position, j, comparedPosition)
 
-				return true
+	// 			return true
+	// 		}
+	// 	}
+	// }
+
+	// ==> is Collision !!!
+
+	res := []bool{
+		false,
+		false,
+	}
+
+	for _, pNumber := range []int{0,1}{
+		headPosition := gc.GameStateInfos.Players[pNumber].Positions[0]
+		otherPlayer := 1
+		if pNumber == 1{
+			otherPlayer = 0
+		}
+		for _, p := range gc.GameStateInfos.Players[otherPlayer].Positions{
+			if headPosition.X == p.X && headPosition.Y == p.Y{
+				res[pNumber] = true
 			}
 		}
 	}
-	return false
+	return res
+
 }
 
 func (gc *GameCore)IsOutOfBoard() ([]bool){
@@ -148,11 +169,7 @@ func (gc *GameCore)LaunchGameCore(){
 			gc.MoveSnakes()
 			gc.GameStateOut <- gc.GameStateInfos
 
-			isOut := gc.IsOutOfBoard()
-			isCollision := gc.IsCollision()
-
-			if isOut[0] || isOut[1] || isCollision{
-				fmt.Printf("OUT ! ")
+			if gc.handleMistakesInGame(){
 				gc.Reset()
 			}
 			
@@ -164,6 +181,31 @@ func (gc *GameCore)LaunchGameCore(){
 }
 
 // =========================================== HELPERS ===========================================
+
+
+func (gc *GameCore)handleMistakesInGame() bool{
+	isOut := gc.IsOutOfBoard()
+	isCollision := gc.IsCollision()
+	mistake:= []bool{
+		false,
+		false,
+	}
+	for i := range []int{0,1}{
+		mistake[i]= isOut[i] || isCollision[i]
+	}
+
+	if mistake[0] && mistake[1]{
+		fmt.Println("EQUAL MISTAKE")
+		return true
+	}else if mistake[0]{
+		gc.GameStateInfos.Players[1].Score++
+		return true
+	}else if mistake[1]{
+		gc.GameStateInfos.Players[0].Score++
+		return true
+	}
+	return false
+}
 
 func initDirection(playerNumber int) int{
 	if playerNumber==0{
