@@ -1,3 +1,15 @@
+@keyframes baitAnim {
+    from {
+      transform: scale(1);
+      background-color: rgb(141, 0, 0);
+    }
+    
+    to {
+        transform: scale(2);
+        background-color: red;
+    }
+  }
+
 .Game{
     & > .infos{
         & .point{
@@ -10,14 +22,29 @@
         }
     }
     & .grid{
+        width:300px;
+        height:300px;
+        display: flex;
+        flex-direction: column;
         & > li{
+            flex-grow: 1;
             display: flex;
+            width:100%;
             & .dot{
-                width:10px;
-                height:10px;
+                flex-grow: 1;
                 border: 1px solid black;
                 &.red{
-                    background-color: red;
+                    position:relative;
+                    &::after{  
+                        top:0;
+                        left:0;
+                        content: '';
+                        height: 12px;
+                        width: 12px;
+                        position: absolute;
+                        animation: baitAnim 1s ease-in-out 0s infinite alternate;
+                        border-radius: 100%;
+                    }
                 }
                 &.player1-head{
                     background-color: rgb(1, 226, 1);
