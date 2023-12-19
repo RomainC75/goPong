@@ -182,6 +182,7 @@ func (gc *GameCore)Reset(){
 
 func (gc *GameCore)ScoreUp(playerNumber int){
 	gc.GameStateInfos.Players[playerNumber].Score ++
+	gc.GameStateInfos.GameConfig.SpeedMs = uint(float32(gc.GameStateInfos.GameConfig.SpeedMs) * 0.9)
 }
 
 func (gc *GameCore)LaunchGameCore(){
