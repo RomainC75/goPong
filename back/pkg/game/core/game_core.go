@@ -1,7 +1,9 @@
 package game
 
 import (
+	"errors"
 	"fmt"
+	"math/rand"
 	"time"
 )
 
@@ -60,12 +62,20 @@ func (gc *GameCore)LaunchCommandListener(PlayerNumber int){
 	}()
 }
 
-func (gc *GameCore)MoveSnakes(){
+func (gc *GameCore)MoveSnakes(isStretch bool, stretchPlayer int){
+	if isStretch{
+		fmt.Println("STRETCH !!")
+	}
+
 	gc.Lock()
 	for playerNumber, player := range gc.GameStateInfos.Players{
-		fmt.Println(" ==================================================> player : ", playerNumber)
-		// fmt.Println("player positions : ", player.Positions)
-		for elIndex:= len(player.Positions)-1; elIndex>=0 ; elIndex--{
+		lastPart := Position{}
+	
+		if isStretch && stretchPlayer==playerNumber{
+			lastPart = player.Positions[len(player.Positions)-1]
+		}
+
+		for elIndex := len(player.Positions)-1 ; elIndex>=0 ; elIndex--{
 			if elIndex > 0 {
 				gc.GameStateInfos.Players[playerNumber].Positions[elIndex] = gc.GameStateInfos.Players[playerNumber].Positions[elIndex-1]
 			}else if elIndex == 0 {
@@ -90,28 +100,14 @@ func (gc *GameCore)MoveSnakes(){
 
 			}
 		}
-		fmt.Println("new player positions : ", gc.GameStateInfos.Players[playerNumber].Positions[0])
+		if isStretch && stretchPlayer == playerNumber{
+			gc.GameStateInfos.Players[playerNumber].Positions = append(gc.GameStateInfos.Players[playerNumber].Positions, lastPart)
+		}
 	}
 	gc.Unlock()
 }
 
 func (gc *GameCore)IsCollision() []bool{
-	// concatenatedPositions := []Position{}
-	// for _, player := range gc.GameStateInfos.Players{
-	// 	concatenatedPositions = append(concatenatedPositions, player.Positions...)
-	// }
-	// for i, position := range concatenatedPositions{
-	// 	for j, comparedPosition := range concatenatedPositions{
-	// 		if i!=j && position.X == comparedPosition.X && position.Y == comparedPosition.Y{
-	// 			fmt.Println("collision : ==> ", i, position, j, comparedPosition)
-
-	// 			return true
-	// 		}
-	// 	}
-	// }
-
-	// ==> is Collision !!!
-
 	res := []bool{
 		false,
 		false,
@@ -147,6 +143,33 @@ func (gc *GameCore)IsOutOfBoard() ([]bool){
 	return res
 }
 
+func (gc *GameCore)IsBaitEaten() (int, error){
+	for i, p := range gc.GameStateInfos.Players{
+		hp := p.Positions[0]
+		bp := gc.GameStateInfos.Bait
+		if hp.X == bp.X && hp.Y == bp.Y{
+			return i, nil
+		}
+	}
+	return 0, errors.New("no bait eaten")
+}
+
+func (gc *GameCore)CreateNewBait(){
+	newP := Position{
+		X: rand.Intn(int(gc.GameStateInfos.GameConfig.Size)),
+		Y: rand.Intn(int(gc.GameStateInfos.GameConfig.Size)),
+	}
+	for _, p := range gc.GameStateInfos.Players{
+		for _, pPart := range p.Positions{
+			if pPart.X == newP.X && pPart.Y == newP.Y{
+				gc.CreateNewBait()
+				return 
+			}
+		}
+	}
+	gc.GameStateInfos.Bait = newP
+}
+
 
 func (gc *GameCore)Reset(){
 	xShift := 4
@@ -157,31 +180,33 @@ func (gc *GameCore)Reset(){
 	time.Sleep(time.Millisecond * time.Duration(gc.GameStateInfos.GameConfig.SpeedMs))
 }
 
+func (gc *GameCore)ScoreUp(playerNumber int){
+	gc.GameStateInfos.Players[playerNumber].Score ++
+}
 
 func (gc *GameCore)LaunchGameCore(){
 	go func (){
 		for{
-			// get the client.LastValue from the core ?
-			
-			// set new Bait if necessary
-
-			// Move players
-			gc.MoveSnakes()
+			playerNum, err := gc.IsBaitEaten()
+			if err != nil {
+				gc.MoveSnakes(false, 0)
+			}else{
+				gc.ScoreUp(playerNum)
+				gc.CreateNewBait()
+				gc.MoveSnakes(true, playerNum)
+			}
 			gc.GameStateOut <- gc.GameStateInfos
 
 			if gc.handleMistakesInGame(){
 				gc.Reset()
 			}
-			
 			time.Sleep(time.Millisecond * time.Duration(gc.GameStateInfos.GameConfig.SpeedMs))
-			
 		}
 		// defer conn.Close()
 	}()
 }
 
 // =========================================== HELPERS ===========================================
-
 
 func (gc *GameCore)handleMistakesInGame() bool{
 	isOut := gc.IsOutOfBoard()
