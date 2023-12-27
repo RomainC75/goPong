@@ -22,8 +22,8 @@ services:
   front:
     container_name: saegus-front
     restart: always
-    depends_on:
-      - back
+    # depends_on:
+    #   - back
     build: ./front
     ports:
       - 3000:3000
