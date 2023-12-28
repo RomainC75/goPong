@@ -193,6 +193,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
           // eslint-disable-next-line no-case-declarations
           const newState = JSON.parse(message.content.state)
           console.log("=> state : ", newState)
+          console.log("=> JSON : ", JSON.stringify(message.content.state))
 
           setPointsState(newState.players.map((p: {score: number})=>p.score))
 
