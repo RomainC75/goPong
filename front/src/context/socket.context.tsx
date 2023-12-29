@@ -4,7 +4,7 @@ import {
   type PropsWithChildren,
   useEffect,
   useContext,
-  useMemo
+  useMemo,
 } from "react";
 import { type SocketContextInterface } from "../@types/socketContext.type";
 import {
@@ -47,14 +47,21 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
   const [roomMessages, setRoomMessages] = useState<IWebSocketMessageContent[]>(
     []
   );
-  const [pointsState, setPointsState] = useState<[number, number]>([0,0])
-  const memoPoints = useMemo(()=>{
-    return pointsState
-  }, [pointsState])
-
+  const [pointsState, setPointsState] = useState<[number, number]>([0, 0]);
+  const memoPoints = useMemo(() => {
+    return pointsState;
+  }, [pointsState]);
 
   const [gameState, setGameState] = useState<IGameState | null>(null);
   const [grid, setGrid] = useState<IGridDot[][]>([]);
+
+  useEffect(() => {
+    const state: IGameState = JSON.parse(
+      '{"bait":{"x":0,"y":1},"players":[{"score":0,"positions":[{"x":11,"y":10},{"x":11,"y":11},{"x":11,"y":12}],"direction":1},{"score":0,"positions":[{"x":19,"y":20},{"x":19,"y":19},{"x":19,"y":18}],"direction":3}],"level":1,"game_config":{"size":30,"speed_ms":1000},"last_command":[0,0]}'
+    );
+    setGameState(state);
+    setPointsState([state.players[0].score, state.players[1].score]);
+  }, []);
 
   const sendBroadcastMessage = (message: string): void => {
     const msg: IwebSocketMessageOut = {
@@ -191,11 +198,15 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
           break;
         case EWsMessageTypeIn.gameState:
           // eslint-disable-next-line no-case-declarations
-          const newState = JSON.parse(message.content.state)
-          console.log("=> state : ", newState)
-          console.log("=> JSON : ", JSON.stringify(message.content.state))
+          const newState = JSON.parse(message.content.state);
 
-          setPointsState(newState.players.map((p: {score: number})=>p.score))
+          setGameState(newState);
+          console.log("=> state : ", newState);
+          console.log("=> JSON : ", JSON.stringify(message.content.state));
+
+          setPointsState(
+            newState.players.map((p: { score: number }) => p.score)
+          );
 
           // eslint-disable-next-line no-case-declarations
           const tempgrid = refreshGrid(grid, newState);
@@ -235,7 +246,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         currentGameConfig,
         sendKeyCode,
         grid,
-        memoPoints
+        memoPoints,
       }}
     >
       {props.children}

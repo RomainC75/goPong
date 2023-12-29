@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react";
 import { Board, type IBoard } from "./Board";
 import { Vector3 } from "three";
 
-const Scene = ({ state }: IBoard) => {
+const Scene = () => {
     
   return (
     <Canvas
@@ -14,7 +14,7 @@ const Scene = ({ state }: IBoard) => {
     //   }}
     //   orthographic
     >
-      <Board state={state} />
+      <Board/>
     </Canvas>
   );
 };

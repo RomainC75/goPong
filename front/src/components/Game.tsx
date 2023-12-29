@@ -23,11 +23,9 @@ const Game = () => {
     });
   }, []);
 
-  const config: IGameConfig = { size: 30 } as IGameConfig
-  const iniGrid = initGrid(config);
-  const state: IGameState = JSON.parse("{\"bait\":{\"x\":0,\"y\":1},\"players\":[{\"score\":0,\"positions\":[{\"x\":11,\"y\":10},{\"x\":11,\"y\":11},{\"x\":11,\"y\":12}],\"direction\":1},{\"score\":0,\"positions\":[{\"x\":19,\"y\":20},{\"x\":19,\"y\":19},{\"x\":19,\"y\":18}],\"direction\":3}],\"level\":1,\"game_config\":{\"size\":30,\"speed_ms\":1000},\"last_command\":[0,0]}")
-  const fakegrid: IGridDot[][] = refreshGrid(iniGrid, state) as IGridDot[][]
-  console.log("=> state : ", state)
+  // const config: IGameConfig = { size: 30 } as IGameConfig
+  // const iniGrid = initGrid(config);
+  // const fakegrid: IGridDot[][] = refreshGrid(iniGrid, state) as IGridDot[][]
 
   // useEffect(()=>{
   //   console.log("=> inside Game : ", grid)
@@ -54,7 +52,7 @@ const Game = () => {
         ))}
       </ul> */}
       <div style={{height: "600px", width: "600px", border:"1px solid black"}}>
-        <Scene state={state}/>
+        <Scene/>
       </div>
     </div>
   );
