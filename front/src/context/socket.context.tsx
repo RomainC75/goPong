@@ -57,7 +57,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
 
   useEffect(() => {
     const state: IGameState = JSON.parse(
-      '{"bait":{"x":0,"y":1},"players":[{"score":0,"positions":[{"x":11,"y":10},{"x":11,"y":11},{"x":11,"y":12},{"x":11,"y":13},{"x":11,"y":14}],"direction":1},{"score":0,"positions":[{"x":19,"y":20},{"x":19,"y":19},{"x":19,"y":18},{"x":19,"y":17},{"x":19,"y":16}],"direction":3}],"level":1,"game_config":{"size":30,"speed_ms":1000},"last_command":[0,0]}'
+      '{"bait":{"x":20,"y":10},"players":[{"score":0,"positions":[{"x":11,"y":10},{"x":11,"y":11},{"x":11,"y":12},{"x":11,"y":13},{"x":11,"y":14}],"direction":1},{"score":0,"positions":[{"x":19,"y":20},{"x":19,"y":19},{"x":19,"y":18},{"x":19,"y":17},{"x":19,"y":16}],"direction":3}],"level":1,"game_config":{"size":30,"speed_ms":1000},"last_command":[0,0]}'
     );
     setGameState(state);
     setPointsState([state.players[0].score, state.players[1].score]);

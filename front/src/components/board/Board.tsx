@@ -8,6 +8,7 @@ import { SocketContext } from "../../context/socket.context";
 import { useControls } from "leva";
 import { Vector3 } from "three";
 import * as THREE from "three";
+import Bait from "./Bait";
 
 interface IBoard {
   state: IGameState;
@@ -205,6 +206,8 @@ const Board = () => {
 
           <Snake snake={gameState.players[0]} playerNumber={0} />
           <Snake snake={gameState.players[1]} playerNumber={1} />
+          <Bait position={gameState.bait} />
+
           <PerspectiveCamera
             makeDefault
             // position={[15, 15, 35]}
