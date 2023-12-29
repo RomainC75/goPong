@@ -174,8 +174,8 @@ const Board = () => {
           />
           <directionalLight position={[15, 15, -10]} intensity={1} />
 
-          <Cloud speed={0.2} segments={40} opacity={0.05} ref={cloud1Ref} />
-          <Cloud speed={0.1} segments={50} opacity={0.05} ref={cloud2Ref} position={[30,0,0]} color={"#fea837"}/>
+          <Cloud speed={5} segments={40} opacity={0.05} ref={cloud1Ref} />
+          <Cloud speed={7} segments={50} opacity={0.05} ref={cloud2Ref} position={[30,0,-3]} color={"#fea837"}/>
           <Sky
             distance={450000}
             sunPosition={[0, 1, 0]}
