@@ -2,6 +2,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import React, { useEffect, useRef } from "react";
 import { Board, type IBoard } from "./Board";
 import { Vector3 } from "three";
+import { Perf } from 'r3f-perf'
 
 const Scene = () => {
     
@@ -14,6 +15,7 @@ const Scene = () => {
     //   }}
     //   orthographic
     >
+        <Perf position='top-left'/>
       <Board/>
     </Canvas>
   );

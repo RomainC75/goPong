@@ -63,6 +63,7 @@
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-react": "^7.33.2",
     "prettier": "^3.0.3",
+    "r3f-perf": "^7.1.2",
     "sass": "^1.69.5",
     "typescript": "^4.9.5"
   }
