@@ -19,4 +19,4 @@ const Scene = ({ state }: IBoard) => {
   );
 };
 
-export default Scene;
+export default Scene
