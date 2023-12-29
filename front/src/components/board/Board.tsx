@@ -90,67 +90,67 @@ const Board = () => {
     }
   });
 
-  const {
-    camDirection,
-    camPosition,
-    light1Position,
-    light1Intensity,
-    light2Position,
-    light2Intensity,
-  } = useControls({
-    camDirection: {
-      value: [Math.PI, 0, 0],
-      step: 0.1,
-      min: -2 * Math.PI,
-      max: 2 * Math.PI,
-    },
-    camPosition: {
-      value: [15, 15, -36],
-      step: 0.1,
-      min: -40,
-      max: 40,
-    },
-    light1Position: {
-      value: [-1.5, -1.5, -3],
-      step: 0.1,
-      min: -40,
-      max: 40,
-    },
-    light1Intensity: {
-      value: 5,
-      step: 0.1,
-      min: 0,
-      max: 40,
-    },
-    light1Color: {
-      value: "#ff8686",
-      onChange: (v) => {
-        if (spot1Ref?.current?.color) {
-          spot1Ref.current.color = new THREE.Color(v);
-        }
-      },
-    },
-    light2Position: {
-      value: [35, 35, -3],
-      step: 0.1,
-      min: -40,
-      max: 40,
-    },
-    light2Intensity: {
-      value: 5,
-      step: 0.1,
-      min: 0,
-      max: 40,
-    },
-    light2Color: {
-      value: "#6e60ff",
-      onChange: (v) => {
-        if (spot2Ref?.current?.color) {
-          spot2Ref.current.color = new THREE.Color(v);
-        }
-      },
-    },
-  });
+  // const {
+  //   camDirection,
+  //   camPosition,
+  //   light1Position,
+  //   light1Intensity,
+  //   light2Position,
+  //   light2Intensity,
+  // } = useControls({
+  //   camDirection: {
+  //     value: [Math.PI, 0, 0],
+  //     step: 0.1,
+  //     min: -2 * Math.PI,
+  //     max: 2 * Math.PI,
+  //   },
+  //   camPosition: {
+  //     value: [15, 15, -36],
+  //     step: 0.1,
+  //     min: -40,
+  //     max: 40,
+  //   },
+  //   light1Position: {
+  //     value: [-1.5, -1.5, -3],
+  //     step: 0.1,
+  //     min: -40,
+  //     max: 40,
+  //   },
+  //   light1Intensity: {
+  //     value: 5,
+  //     step: 0.1,
+  //     min: 0,
+  //     max: 40,
+  //   },
+  //   light1Color: {
+  //     value: "#ff8686",
+  //     onChange: (v) => {
+  //       if (spot1Ref?.current?.color) {
+  //         spot1Ref.current.color = new THREE.Color(v);
+  //       }
+  //     },
+  //   },
+  //   light2Position: {
+  //     value: [35, 35, -3],
+  //     step: 0.1,
+  //     min: -40,
+  //     max: 40,
+  //   },
+  //   light2Intensity: {
+  //     value: 5,
+  //     step: 0.1,
+  //     min: 0,
+  //     max: 40,
+  //   },
+  //   light2Color: {
+  //     value: "#6e60ff",
+  //     onChange: (v) => {
+  //       if (spot2Ref?.current?.color) {
+  //         spot2Ref.current.color = new THREE.Color(v);
+  //       }
+  //     },
+  //   },
+  // });
 
   useEffect(() => {
     camera.lookAt(5, 1, 0);
@@ -164,14 +164,17 @@ const Board = () => {
           <ambientLight intensity={0.2} position={new Vector3(30, 1, -5)} />
 
           <directionalLight
-            position={light1Position}
+            // position={light1Position}
+            position = {[-1.5, -1.5, -3]}
             ref={spot1Ref}
-            intensity={light1Intensity}
+            intensity={5}
+            color= {"#ff8686"}
           />
           <directionalLight
-            position={light2Position}
+            // position={light2Position}
+            position={[35, 35, -3]}
             ref={spot2Ref}
-            intensity={light2Intensity}
+            intensity={5}
           />
           <directionalLight position={[15, 15, -10]} intensity={1} />
 
@@ -210,10 +213,10 @@ const Board = () => {
 
           <PerspectiveCamera
             makeDefault
-            // position={[15, 15, 35]}
-            // rotation={[Math.PI, Math.PI, Math.PI]}
-            position={camPosition}
-            rotation={camDirection}
+            position={[15, 15, -36]}
+            rotation={[Math.PI, 0, 0]}
+            // position={camPosition}
+            // rotation={camDirection}
           />
         </>
       )}

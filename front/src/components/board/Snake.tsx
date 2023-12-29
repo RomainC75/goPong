@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { IPlayerState } from "../../@types/socket.type";
 import { useFrame } from "@react-three/fiber";
-import { BufferGeometry, Material, Mesh, NormalBufferAttributes, Object3DEventMap } from "three";
+import { BufferGeometry, Material, Mesh, NormalBufferAttributes, Object3DEventMap, SphereGeometry } from "three";
 
 interface ISnake {
   snake: IPlayerState;
@@ -14,11 +14,17 @@ const getSize = (normalSize: number, index: number, shift: number) => {
 }
 
 const Snake = ({ snake, playerNumber }: ISnake) => {
-  const [shift, setShift] = useState<number>(0);
+//   const [shift, setShift] = useState<number>(0);
+  const shiftRef = useRef<SphereGeometry>(null);
     const icosaRef = useRef<Mesh<BufferGeometry<NormalBufferAttributes>, Material | Material[], Object3DEventMap> | null>(null);
 
   useFrame((state, delta) => {
-    setShift(state.clock.getElapsedTime());
+    // setShift(state.clock.getElapsedTime());
+    if(shiftRef.current){
+        console.log("==> ", shiftRef.current)
+        // shift.current.radius = 
+    }
+
     if(icosaRef.current == null) return
     icosaRef.current.rotation.x += 0.2 * delta
     icosaRef.current.rotation.y += 0.05 * delta
@@ -33,7 +39,8 @@ const Snake = ({ snake, playerNumber }: ISnake) => {
 
       {snake.positions.slice(1).map((dot, i) => (
         <mesh key={`${i}`} position={[dot.x, dot.y, -0.7]}>
-          <sphereGeometry args={[getSize(0.6, i, shift), 5, 5]} />
+          {/* <sphereGeometry args={[getSize(0.6, i, shift), 5, 5]} ref={shiftRef} /> */}
+          <sphereGeometry args={[0.6, 5, 5]} ref={shiftRef} />
           <meshStandardMaterial color={playerNumber == 0 ? "blue" : "yellow"} metalness={1} roughness={1}/>
         </mesh>
       ))}

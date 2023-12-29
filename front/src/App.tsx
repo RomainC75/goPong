@@ -23,8 +23,7 @@ function App (): JSX.Element {
       <div>
         <CreateGame/>
         <GameList/>
-        {/* {currentGame && currentGameConfig && <Game/>} */}
-        <Game/>
+        {currentGame && currentGameConfig && <Game/>}
         <Message/>
         <MessageBox messages={broadcastMessages}/>
         {room ? <DisconnectFromRoom/> : <CreateRoom />}
