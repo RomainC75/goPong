@@ -61,19 +61,31 @@ const Board = () => {
   const { camera } = useThree();
   const spot1Ref = useRef<THREE.DirectionalLight | null>(null);
   const spot2Ref = useRef<THREE.DirectionalLight | null>(null);
-  const cloudRef = useRef<THREE.Group<THREE.Object3DEventMap> | null>(null);
+  const cloud1Ref = useRef<THREE.Group<THREE.Object3DEventMap> | null>(null);
+  const cloud2Ref = useRef<THREE.Group<THREE.Object3DEventMap> | null>(null);
 
-  let cloudDirection = 315;
+  let cloud1Direction = 315;
+  let cloud2Direction = 225;
 
   useFrame((state, delta) => {
-    if (cloudRef.current?.position) {
-      const position = cloudRef.current.position;
+    if (cloud1Ref.current?.position) {
+      const position = cloud1Ref.current.position;
       if (position.x > 30 || position.y > 30){
-        cloudDirection = 135;
+        cloud1Direction = 135;
       }else if (position.x <= 0 || position.y <= 0){
-        cloudDirection = 315;
+        cloud1Direction = 315;
       }
-      cloudRef.current.position.set(...getNewPosition( position, 0.1, cloudDirection))
+      cloud1Ref.current.position.set(...getNewPosition( position, 0.1, cloud1Direction))
+    }
+    if (cloud2Ref.current?.position) {
+      const position = cloud2Ref.current.position;
+      if (position.x < 0 || position.y > 30){
+        cloud2Direction = 45;
+      }else if (position.x > 30 || position.y <= 0){
+        cloud2Direction = 225;
+      }
+      console.log("=> direction : ", cloud2Direction)
+      cloud2Ref.current.position.set(...getNewPosition( position, 0.04, cloud2Direction))
     }
   });
 
@@ -92,7 +104,7 @@ const Board = () => {
       max: 2 * Math.PI,
     },
     camPosition: {
-      value: [15, 15, -40],
+      value: [15, 15, -36],
       step: 0.1,
       min: -40,
       max: 40,
@@ -162,7 +174,8 @@ const Board = () => {
           />
           <directionalLight position={[15, 15, -10]} intensity={1} />
 
-          <Cloud speed={0.2} segments={40} opacity={0.05} ref={cloudRef} />
+          <Cloud speed={0.2} segments={40} opacity={0.05} ref={cloud1Ref} />
+          <Cloud speed={0.1} segments={50} opacity={0.05} ref={cloud2Ref} position={[30,0,0]} color={"#fea837"}/>
           <Sky
             distance={450000}
             sunPosition={[0, 1, 0]}
@@ -183,8 +196,8 @@ const Board = () => {
                 />
                 <meshStandardMaterial
                   color={i === 0 && j === 0 ? "red" : "grey"}
-                  metalness={0.9 + Math.random() * 0.1}
-                  roughness={0.9 + Math.random() * 0.1}
+                  metalness={0.85 + Math.random() * 0.15}
+                  roughness={0.85 + Math.random() * 0.15}
                 />
               </mesh>
             ))

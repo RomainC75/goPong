@@ -33,7 +33,7 @@ const Game = () => {
           <span className={`point ${currentGame?.playerNumber === 1 && 'me'}`}> {memoPoints[1]}</span>
         </div>
       </div>
-      <div style={{height: "600px", width: "600px", border:"1px solid black"}}>
+      <div style={{height: "800px", width: "800px", border:"1px solid black"}}>
         <Scene/>
       </div>
     </div>

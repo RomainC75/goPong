@@ -1,7 +1,7 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { IPlayerState } from "../../@types/socket.type";
 import { useFrame } from "@react-three/fiber";
-import { Mesh } from "three";
+import { BufferGeometry, Material, Mesh, NormalBufferAttributes, Object3DEventMap } from "three";
 
 interface ISnake {
   snake: IPlayerState;
@@ -15,14 +15,19 @@ const getSize = (normalSize: number, index: number, shift: number) => {
 
 const Snake = ({ snake, playerNumber }: ISnake) => {
   const [shift, setShift] = useState<number>(0);
+    const icosaRef = useRef<Mesh<BufferGeometry<NormalBufferAttributes>, Material | Material[], Object3DEventMap> | null>(null);
 
   useFrame((state, delta) => {
     setShift(state.clock.getElapsedTime());
+    if(icosaRef.current == null) return
+    icosaRef.current.rotation.x += 0.2 * delta
+    icosaRef.current.rotation.y += 0.05 * delta
   });
   return (
     <>
-      <mesh position={[snake.positions[0].x, snake.positions[0].y, -0.6]}>
-        <sphereGeometry args={[0.8, 5, 5]} />
+      <mesh position={[snake.positions[0].x, snake.positions[0].y, -0.6]} ref={icosaRef}>
+        {/* <sphereGeometry args={[0.8, 5, 5]} /> */}
+        <icosahedronGeometry args={[0.8, 0]} />
         <meshStandardMaterial color={playerNumber == 0 ? "red" : "green"} metalness={1} roughness={1}/>
       </mesh>
 
