@@ -21,15 +21,15 @@ const Snake = ({ snake, playerNumber }: ISnake) => {
   });
   return (
     <>
-      <mesh position={[snake.positions[0].x, snake.positions[0].y, 0.6]}>
+      <mesh position={[snake.positions[0].x, snake.positions[0].y, -0.6]}>
         <sphereGeometry args={[0.8, 32, 32]} />
-        <meshStandardMaterial color={playerNumber == 0 ? "red" : "green"} />
+        <meshStandardMaterial color={playerNumber == 0 ? "red" : "green"} metalness={1} roughness={1}/>
       </mesh>
 
       {snake.positions.slice(1).map((dot, i) => (
-        <mesh key={`${i}`} position={[dot.x, dot.y, 0.7]}>
+        <mesh key={`${i}`} position={[dot.x, dot.y, -0.7]}>
           <sphereGeometry args={[getSize(0.6, i, shift), 32, 32]} />
-          <meshStandardMaterial color={playerNumber == 0 ? "blue" : "yellow"} />
+          <meshStandardMaterial color={playerNumber == 0 ? "blue" : "yellow"} metalness={1} roughness={1}/>
         </mesh>
       ))}
     </>
