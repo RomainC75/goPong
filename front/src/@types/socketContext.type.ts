@@ -29,4 +29,5 @@ export interface SocketContextInterface {
   sendKeyCode: (code: number) => void
   grid: IGridDot[][]
   memoPoints: [number, number]
+  gameSize: number
 }

@@ -44,6 +44,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
     useState<IGameConfig | null>(null);
   const [availableRoomList, setAvailableRoomList] = useState<IRoom[]>([]);
   const [availableGameList, setAvailableGameList] = useState<IGame[]>([]);
+  const [gameSize, setGameSize] = useState<number>(0);
   const [roomMessages, setRoomMessages] = useState<IWebSocketMessageContent[]>(
     []
   );
@@ -193,6 +194,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
           const tempCurrentGameConfig: IGameConfig = JSON.parse(
             message.content.config
           ) as IGameConfig;
+          setGameSize(tempCurrentGameConfig.size)
           setCurrentGameConfig(tempCurrentGameConfig);
           setGrid(initGrid(tempCurrentGameConfig));
           break;
@@ -247,6 +249,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         sendKeyCode,
         grid,
         memoPoints,
+        gameSize
       }}
     >
       {props.children}

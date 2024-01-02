@@ -10,6 +10,7 @@ const Game = () => {
     SocketContext
   ) as SocketContextInterface;
 
+
   useEffect(() => {
     document.addEventListener('keydown', function (event) {
       const codeArr = [39, 37];

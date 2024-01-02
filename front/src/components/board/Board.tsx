@@ -14,11 +14,11 @@ interface IBoard {
   state: IGameState;
 }
 
-const displayBlocks = (state: IGameState): boolean[][] => {
+const displayBlocks = (size: number): boolean[][] => {
   const array: boolean[][] = [];
-  for (let x = 0; x < state.game_config.size; x++) {
+  for (let x = 0; x < size; x++) {
     array.push([]);
-    for (let y = 0; y < state.game_config.size; y++) {
+    for (let y = 0; y < size; y++) {
       array[x].push(true);
     }
   }
@@ -33,7 +33,7 @@ const getNewPosition = (
   currentPosition: Vector3,
   speed: number,
   direction: number
-): [number,number,number] => {
+): [number, number, number] => {
   // between 0 andd 2*Pi
   let x = currentPosition.x;
   let y = currentPosition.y;
@@ -58,7 +58,9 @@ const getNewPosition = (
 };
 
 const Board = () => {
-  const { gameState } = useContext(SocketContext) as SocketContextInterface;
+  const { gameSize } = useContext(
+    SocketContext
+  ) as SocketContextInterface;
   const { camera } = useThree();
   const spot1Ref = useRef<THREE.DirectionalLight | null>(null);
   const spot2Ref = useRef<THREE.DirectionalLight | null>(null);
@@ -68,25 +70,41 @@ const Board = () => {
   let cloud1Direction = 315;
   let cloud2Direction = 225;
 
+  useEffect(() => {
+    console.log('App rendered');
+  });
+
+  useEffect(() => {
+    console.log('App rendered : gameSize');
+  }, [gameSize]);
+
+  useEffect(()=>{
+    console.log("==> GAMESIZE : ", gameSize)
+  },[gameSize])
+
   useFrame((state, delta) => {
     if (cloud1Ref.current?.position) {
       const position = cloud1Ref.current.position;
-      if (position.x > 30 || position.y > 30){
+      if (position.x > 30 || position.y > 30) {
         cloud1Direction = 135;
-      }else if (position.x <= 0 || position.y <= 0){
+      } else if (position.x <= 0 || position.y <= 0) {
         cloud1Direction = 315;
       }
-      cloud1Ref.current.position.set(...getNewPosition( position, 0.1, cloud1Direction))
+      cloud1Ref.current.position.set(
+        ...getNewPosition(position, 0.1, cloud1Direction)
+      );
     }
     if (cloud2Ref.current?.position) {
       const position = cloud2Ref.current.position;
-      if (position.x < 0 || position.y > 30){
+      if (position.x < 0 || position.y > 30) {
         cloud2Direction = 45;
-      }else if (position.x > 30 || position.y <= 0){
+      } else if (position.x > 30 || position.y <= 0) {
         cloud2Direction = 225;
       }
-      console.log("=> direction : ", cloud2Direction)
-      cloud2Ref.current.position.set(...getNewPosition( position, 0.04, cloud2Direction))
+      console.log("=> direction : ", cloud2Direction);
+      cloud2Ref.current.position.set(
+        ...getNewPosition(position, 0.04, cloud2Direction)
+      );
     }
   });
 
@@ -158,68 +176,62 @@ const Board = () => {
 
   return (
     <>
-      {gameState && (
-        <>
-          {/* <OrbitControls position={[state.game_config.size / 2, state.game_config.size / 2, 5]} rotation={[(180 * Math.PI) / 180, (90 * Math.PI) / 180, 10]}/> */}
-          <ambientLight intensity={0.2} position={new Vector3(30, 1, -5)} />
-
-          <directionalLight
-            // position={light1Position}
-            position = {[-1.5, -1.5, -3]}
-            ref={spot1Ref}
-            intensity={5}
-            color= {"#ff8686"}
-          />
-          <directionalLight
-            // position={light2Position}
-            position={[35, 35, -3]}
-            ref={spot2Ref}
-            intensity={5}
-          />
-          <directionalLight position={[15, 15, -10]} intensity={1} />
-
-          <Cloud speed={5} segments={40} opacity={0.05} ref={cloud1Ref} />
-          <Cloud speed={7} segments={50} opacity={0.05} ref={cloud2Ref} position={[30,0,-3]} color={"#fea837"}/>
-          <Sky
-            distance={450000}
-            sunPosition={[0, 1, 0]}
-            inclination={0}
-            azimuth={0.25}
-          />
-
-          {displayBlocks(gameState).map((line, i) =>
-            line.map((dot, j) => (
-              <mesh
-                key={`${i},${j}`}
-                position={[i, j, 0]}
-                rotation-x={Math.PI / 2}
-              >
-                {/* <boxGeometry args={[0.9, 0.9, 0.1]} /> */}
-                <cylinderGeometry
-                  args={[0.7, 0.3, 0.2, 5 + Math.random() * 3]}
-                />
-                <meshStandardMaterial
-                  color={i === 0 && j === 0 ? "red" : "grey"}
-                  metalness={0.85 + Math.random() * 0.15}
-                  roughness={0.85 + Math.random() * 0.15}
-                />
-              </mesh>
-            ))
-          )}
-
-          <Snake snake={gameState.players[0]} playerNumber={0} />
-          <Snake snake={gameState.players[1]} playerNumber={1} />
-          <Bait position={gameState.bait} />
-
-          <PerspectiveCamera
-            makeDefault
-            position={[15, 15, -36]}
-            rotation={[Math.PI, 0, 0]}
-            // position={camPosition}
-            // rotation={camDirection}
-          />
-        </>
+      {/* <OrbitControls position={[state.game_config.size / 2, state.game_config.size / 2, 5]} rotation={[(180 * Math.PI) / 180, (90 * Math.PI) / 180, 10]}/> */}
+      <ambientLight intensity={0.2} position={new Vector3(30, 1, -5)} />
+      <directionalLight
+        // position={light1Position}
+        position={[-1.5, -1.5, -3]}
+        ref={spot1Ref}
+        intensity={5}
+        color={"#ff8686"}
+      />
+      <directionalLight
+        // position={light2Position}
+        position={[35, 35, -3]}
+        ref={spot2Ref}
+        intensity={5}
+      />
+      <directionalLight position={[15, 15, -10]} intensity={1} />
+      <Cloud speed={5} segments={40} opacity={0.05} ref={cloud1Ref} />
+      <Cloud
+        speed={7}
+        segments={50}
+        opacity={0.05}
+        ref={cloud2Ref}
+        position={[30, 0, -3]}
+        color={"#fea837"}
+      />
+      <Sky
+        distance={450000}
+        sunPosition={[0, 1, 0]}
+        inclination={0}
+        azimuth={0.25}
+      />
+      // TODO
+      {displayBlocks(gameSize).map((line, i) =>
+        line.map((dot, j) => (
+          <mesh key={`${i},${j}`} position={[i, j, 0]} rotation-x={Math.PI / 2}>
+            {/* <boxGeometry args={[0.9, 0.9, 0.1]} /> */}
+            <cylinderGeometry args={[0.7, 0.3, 0.2, 5 + Math.random() * 3]} />
+            <meshStandardMaterial
+              color={i === 0 && j === 0 ? "red" : "grey"}
+              metalness={0.85 + Math.random() * 0.15}
+              roughness={0.85 + Math.random() * 0.15}
+            />
+          </mesh>
+        ))
       )}
+      {/* <Snake playerNumber={0} />
+      <Snake playerNumber={1} />
+      // TODO
+      <Bait /> */}
+      <PerspectiveCamera
+        makeDefault
+        position={[15, 15, -36]}
+        rotation={[Math.PI, 0, 0]}
+        // position={camPosition}
+        // rotation={camDirection}
+      />
     </>
   );
 };

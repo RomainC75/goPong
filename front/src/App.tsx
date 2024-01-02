@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import './App.css'
 import { SocketContext } from './context/socket.context'
 import CreateRoom from './components/inputs/CreateRoom'
@@ -16,7 +16,7 @@ function App (): JSX.Element {
   const { broadcastMessages, room, availableRoomList, currentGame, currentGameConfig } = useContext(
     SocketContext
   ) as SocketContextInterface
-
+  
   return (
     <div className='App'>
       <h1>Tron</h1>
