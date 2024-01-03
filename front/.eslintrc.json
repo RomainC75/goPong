@@ -20,6 +20,9 @@
         "react/react-in-jsx-scope": "off",
         "react/jsx-uses-react": "off",
         "@typescript-eslint/strict-boolean-expressions": "off",
-        "eslint-disable-next-line no-case-declarations": "off"
+        "eslint-disable-next-line no-case-declarations": "off",
+        "@typescript-eslint/member-delimiter-style": "off",
+        "@typescript-eslint/quotes": "off",
+        "@typescript-eslint/semi": "off"
     }
 }

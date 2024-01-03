@@ -194,7 +194,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
           const tempCurrentGameConfig: IGameConfig = JSON.parse(
             message.content.config
           ) as IGameConfig;
-          setGameSize(tempCurrentGameConfig.size)
+          setGameSize(tempCurrentGameConfig.size);
           setCurrentGameConfig(tempCurrentGameConfig);
           setGrid(initGrid(tempCurrentGameConfig));
           break;
