@@ -11,6 +11,7 @@ import {
 } from "three";
 import { SocketContext } from "../../context/socket.context";
 import { SocketContextInterface } from "../../@types/socketContext.type";
+import { useGame } from "../../hooks/useGame";
 
 interface ISnake {
   playerNumber: number;
@@ -22,7 +23,7 @@ interface ISnake {
 // };
 
 const Snake = ({ playerNumber }: ISnake) => {
-  const { gameState } = useContext(SocketContext) as SocketContextInterface;
+  const { players } = useGame();
   const shiftRef = useRef<SphereGeometry>(null);
   const icosaRef = useRef<Mesh<
     BufferGeometry<NormalBufferAttributes>,
@@ -32,8 +33,7 @@ const Snake = ({ playerNumber }: ISnake) => {
 
   // const refArray: Array<Mesh<BufferGeometry<NormalBufferAttributes>> | null> =
   //   [];
-  // const buffRef = useRef(null);
-
+  // const buffRef = useRef(null)
   
 
   useFrame((state, delta) => {
@@ -42,16 +42,17 @@ const Snake = ({ playerNumber }: ISnake) => {
       console.log("==> ", shiftRef.current);
       // shift.current.radius =
     }
-
+    console.log(" => playersss : ", players)
     if (icosaRef.current == null) return;
     icosaRef.current.rotation.x += 0.2 * delta;
     icosaRef.current.rotation.y += 0.05 * delta;
+    icosaRef.current.position.x = players[playerNumber].positions[0].x;
+    icosaRef.current.position.y = players[playerNumber].positions[0].y;
 
-    if (gameState) {
-      icosaRef.current.position.x = gameState.players[playerNumber].positions[0].x;
-      icosaRef.current.position.y = gameState.players[playerNumber].positions[0].y;
-    }
+    // players[playerNumber].positions.slice(1).forEach((dot, i) => {});
+
   });
+
   return (
     <>
       <mesh
@@ -61,28 +62,25 @@ const Snake = ({ playerNumber }: ISnake) => {
         {/* <sphereGeometry args={[0.8, 5, 5]} /> */}
         <icosahedronGeometry args={[0.8, 0]} />
         <meshStandardMaterial
-          color={playerNumber == 0 ? "red" : "green"}
+          color={playerNumber === 0 ? "red" : "green"}
           metalness={1}
           roughness={1}
         />
       </mesh>
-
+      {players[playerNumber].positions.slice(1).map((dot, i) => (
+          <mesh key={`${i}`} position={[dot.x, dot.y, -0.7]}>
+            {/* <sphereGeometry args={[getSize(0.6, i, shift), 5, 5]} ref={shiftRef} /> */}
+            <sphereGeometry args={[0.6, 5, 5]} ref={shiftRef} />
+            <meshStandardMaterial
+              color={playerNumber === 0 ? "blue" : "yellow"}
+              metalness={1}
+              roughness={1}
+            />
+          </mesh>
+        ))}
       
     </>
   );
 };
 
 export default Snake;
-
-
-// {snake.positions.slice(1).map((dot, i) => (
-//   <mesh key={`${i}`} position={[dot.x, dot.y, -0.7]} ref={buffRef[i + 1]}>
-//     {/* <sphereGeometry args={[getSize(0.6, i, shift), 5, 5]} ref={shiftRef} /> */}
-//     <sphereGeometry args={[0.6, 5, 5]} ref={shiftRef} />
-//     <meshStandardMaterial
-//       color={playerNumber == 0 ? "blue" : "yellow"}
-//       metalness={1}
-//       roughness={1}
-//     />
-//   </mesh>
-// ))}

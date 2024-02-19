@@ -16,7 +16,6 @@ function App (): JSX.Element {
   const { broadcastMessages, room, availableRoomList, currentGame, currentGameConfig } = useContext(
     SocketContext
   ) as SocketContextInterface
-  
   return (
     <div className='App'>
       <h1>Tron</h1>

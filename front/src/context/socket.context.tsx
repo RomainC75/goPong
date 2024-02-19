@@ -23,10 +23,13 @@ import useWebSocket from "react-use-websocket";
 import { AuthContext } from "./auth.context";
 import { type AuthContextInterface } from "../@types/authContext.type";
 import { initGrid, refreshGrid } from "../utils/gameGrid";
+import { useGame } from "../hooks/useGame";
+import { EActions } from "../@types/game.type";
 
 const SocketContext = createContext<SocketContextInterface | null>(null);
 
 const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
+  const { dispatch } = useGame()
   const { user } = useContext(AuthContext) as AuthContextInterface;
   const token: string | null = localStorage.getItem("authToken");
 
@@ -53,7 +56,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
     return pointsState;
   }, [pointsState]);
 
-  const [gameState, setGameState] = useState<IGameState | null>(null);
+  // const [gameState, setGameState] = useState<IGameState | null>(null);
   const [grid, setGrid] = useState<IGridDot[][]>([]);
 
   // useEffect(() => {
@@ -68,8 +71,8 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
     const msg: IwebSocketMessageOut = {
       type: EWsMessageTypeOut.broadcast,
       content: {
-        message,
-      },
+        message
+      }
     };
     sendWsMessage(JSON.stringify(msg));
   };
@@ -78,8 +81,8 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
     const msg: IwebSocketMessageOut = {
       type: EWsMessageTypeOut.connectToRoom,
       content: {
-        roomId,
-      },
+        roomId
+      }
     };
     sendWsMessage(JSON.stringify(msg));
   };
@@ -89,8 +92,8 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
     const msg: IwebSocketMessageOut = {
       type: EWsMessageTypeOut.createRoom,
       content: {
-        roomName,
-      },
+        roomName
+      }
     };
     sendWsMessage(JSON.stringify(msg));
   };
@@ -99,8 +102,8 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
     const msg: IwebSocketMessageOut = {
       type: EWsMessageTypeOut.sendToRoom,
       content: {
-        message,
-      },
+        message
+      }
     };
     sendWsMessage(JSON.stringify(msg));
   };
@@ -110,8 +113,8 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
       type: EWsMessageTypeOut.disconnectFromRoom,
       content: {
         userId: user?.id,
-        userEmail: user?.email,
-      },
+        userEmail: user?.email
+      }
     };
     sendWsMessage(JSON.stringify(msg));
   };
@@ -120,8 +123,8 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
     const msg: IwebSocketMessageOut = {
       type: EWsMessageTypeOut.createGame,
       content: {
-        gameName: name,
-      },
+        gameName: name
+      }
     };
     sendWsMessage(JSON.stringify(msg));
   };
@@ -130,8 +133,8 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
     const msg: IwebSocketMessageOut = {
       type: EWsMessageTypeOut.selectGame,
       content: {
-        gameId: id,
-      },
+        gameId: id
+      }
     };
     sendWsMessage(JSON.stringify(msg));
   };
@@ -143,17 +146,17 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         command: `${key}`,
       },
     };
-    console.log("=> key : ", key);
+    // console.log("=> key : ", key);
     sendWsMessage(JSON.stringify(msg));
   };
 
   useEffect(() => {
     if (lastMessage !== null) {
-      console.log("=> last message : ", lastMessage);
+      // console.log("=> last message : ", lastMessage);
       const message = JSON.parse(lastMessage.data);
       switch (message.type) {
         case EWsMessageTypeIn.broadcast:
-          console.log("=> message BRROADCAST received : ", message.content);
+          // console.log("=> message BRROADCAST received : ", message.content);
           setBroadcastMessages((messages) => [...messages, message.content]);
           break;
         case EWsMessageTypeIn.roomCreatedByYou:
@@ -173,23 +176,23 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
           setRoom(null);
           break;
         case EWsMessageTypeIn.userDisconnectedFromRoom:
-          console.log("=> user disconnected ! ", message.content);
+          // console.log("=> user disconnected ! ", message.content);
           break;
         case EWsMessageTypeIn.gameCreatedByYou:
-          console.log("=> created successfully!");
+          // console.log("=> created successfully!");
           setCurrentGame({
             id: message.content.id,
             name: message.content.name,
-            playerNumber: 0,
+            playerNumber: 0
           });
           break;
 
         case EWsMessageTypeIn.gameCreated:
-          console.log("=> created ", message.content);
+          // console.log("=> created ", message.content);
           setAvailableGameList((gameList) => [...gameList, message.content]);
           break;
         case EWsMessageTypeIn.gameConfigBroadCast:
-          console.log("=>CONFIG ", message.content);
+          // console.log("=>CONFIG ", message.content);
           // eslint-disable-next-line no-case-declarations
           const tempCurrentGameConfig: IGameConfig = JSON.parse(
             message.content.config
@@ -202,7 +205,10 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
           // eslint-disable-next-line no-case-declarations
           const newState = JSON.parse(message.content.state);
 
-          setGameState(newState);
+          // setGameState(newState);
+          console.log("=> newState : ", newState)
+          dispatch({ type: EActions.Update, payload: newState })
+
           console.log("=> state : ", newState);
           console.log("=> JSON : ", JSON.stringify(message.content.state));
 
@@ -218,7 +224,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
 
           break;
         case EWsMessageTypeIn.roomsGamesNotification:
-          console.log("=> NOTIFICATION : ", message.content);
+          // console.log("=> NOTIFICATION : ", message.content);
           setAvailableRoomList(JSON.parse(message.content.rooms));
           setAvailableGameList(JSON.parse(message.content.games));
           break;
@@ -243,7 +249,7 @@ const SocketProviderWrapper = (props: PropsWithChildren): JSX.Element => {
         createGame,
         selectGame,
         currentGame,
-        gameState,
+        // gameState,
         setCurrentGame,
         currentGameConfig,
         sendKeyCode,

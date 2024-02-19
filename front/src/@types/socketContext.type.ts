@@ -1,10 +1,9 @@
 import {
   type IWebSocketMessageContent,
   type IRoom,
-  IGame,
-  IGameState,
-  IGameConfig,
-  IGridDot,
+  type IGame,
+  type IGameConfig,
+  type IGridDot
 } from './socket.type'
 
 export interface SocketContextInterface {
@@ -22,7 +21,7 @@ export interface SocketContextInterface {
   createGame: (name: string) => void
   selectGame: (id: string) => void
   currentGame: IGame | null
-  gameState: IGameState | null
+  // gameState: IGameState | null
   setCurrentGame: (currentGame: IGame) => void
   currentGameConfig: IGameConfig | null
   // setMessages: (messages: Array<IwebSocketMessageIn | IwebSocketMessageOut>) => void
