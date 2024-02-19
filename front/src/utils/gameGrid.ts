@@ -63,7 +63,7 @@ export const refreshGrid = (
         }
       }
     }
-    console.log("=> new GRID : ", tempGrid);
+    // console.log("=> new GRID : ", tempGrid);
     return tempGrid;
   }
 };

@@ -1,0 +1,21 @@
+import { useRef } from 'react'
+import { useFrame } from '@react-three/fiber'
+
+
+
+const Polyhedron = (props) => {
+  const ref = useRef()
+
+  useFrame((_, delta) => {
+    ref.current.rotation.x += 0.3 * delta
+    ref.current.rotation.y += 0.4 * delta
+  })
+
+  return (
+    // <mesh {...props} ref={ref}>
+      <icosahedronGeometry args={[1, 1]} />
+    // </mesh>
+  )
+}
+
+export default Polyhedron

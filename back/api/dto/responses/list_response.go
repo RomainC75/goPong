@@ -8,27 +8,27 @@ import (
 )
 
 type ListResponse struct {
-	ID       uuid.UUID `json:"id"`
-	Name string `json:"name"`
-	CreatedAt    time.Time    `json:"createdAt"`
-	UpdatedAt    time.Time    `json:"updatedAt"`
+	ID        uuid.UUID `json:"id"`
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 
-	UserId	uuid.UUID `json:"userId"`
+	UserId uuid.UUID `json:"userId"`
 }
 
-func ToListResponse (list ListModel.List)ListResponse{
+func ToListResponse(list ListModel.List) ListResponse {
 	return ListResponse{
-		ID: list.ID,
-		Name: list.Name,
+		ID:        list.ID,
+		Name:      list.Name,
 		CreatedAt: list.CreatedAt,
 		UpdatedAt: list.UpdatedAt,
-		UserId: list.UserId,
+		UserId:    list.UserId,
 	}
 }
 
-func ToListArrayResponse (listArray []ListModel.List) []ListResponse{
+func ToListArrayResponse(listArray []ListModel.List) []ListResponse {
 	listRes := make([]ListResponse, 0)
-	for _, l := range listArray{
+	for _, l := range listArray {
 		listRes = append(listRes, ToListResponse(l))
 	}
 	return listRes
